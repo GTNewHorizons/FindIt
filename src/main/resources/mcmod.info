@@ -1,0 +1,20 @@
+[
+  {
+    "modid": "findit",
+    "name": "FindIt",
+    "description": "Now where did I put that EV mixer...",
+    "version": "${version}",
+    "mcversion": "${mcversion}",
+    "url": "",
+    "updateUrl": "",
+    "authorList": [
+      "mitchej123"
+    ],
+    "credits": "Heavily inspired from Buuz135/findme",
+    "logoFile": "",
+    "screenshots": [],
+    "dependencies": [
+      "NotEnoughItems"
+    ]
+  }
+]
