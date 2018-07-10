@@ -17,14 +17,15 @@ import java.io.File;
         modid = FindIt.MOD_ID,
         name = FindIt.MOD_NAME,
         version = FindIt.VERSION,
-        dependencies = "required-after:NotEnoughItems;required-after:gregtech"
+        dependencies = "required-after:NotEnoughItems;required-after:gregtech",
+        acceptableRemoteVersions = "*"
 )
 public class FindIt {
 
     // Mod info
     public static final String MOD_ID = "findit";
     public static final String MOD_NAME = "FindIt";
-    public static final String VERSION = "1.0.0";
+    public static final String VERSION = "1.0.1";
 
     // Config
     public static int SEARCH_RADIUS = 16;
