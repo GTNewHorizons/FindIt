@@ -1,21 +1,22 @@
 buildscript {
     repositories {
         mavenCentral()
+		jcenter()
         maven {
-            name = "gt"
-            url = "https://gregtech.overminddl1.com/"
+            name = "forge"
+            url = "http://files.minecraftforge.net/maven"
         }
         maven {
             name = "sonatype"
             url = "https://oss.sonatype.org/content/repositories/snapshots/"
         }
         maven {
-            name = "jitpack.io"
+            name = "jitpack"
             url = "https://jitpack.io"
         }
     }
     dependencies {
-        classpath 'com.github.GTNH2:ForgeGradle:FG_1.2-SNAPSHOT'
+        classpath "com.github.GTNH2:ForgeGradle:FG_1.2-SNAPSHOT"
     }
 }
 
