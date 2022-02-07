@@ -23,9 +23,9 @@ import java.io.File;
 public class FindIt {
 
     // Mod info
-    public static final String MOD_ID = "findit";
-    public static final String MOD_NAME = "FindIt";
-    public static final String VERSION = "1.0.1";
+    public static final String MOD_ID = "GRADLETOKEN_MODID";
+    public static final String MOD_NAME = "GRADLETOKEN_MODNAME";
+    public static final String VERSION = "GRADLETOKEN_VERSION";
 
     // Config
     public static int SEARCH_RADIUS = 16;
