@@ -4,20 +4,10 @@ import codechicken.nei.LayoutManager;
 import codechicken.nei.NEIClientConfig;
 import codechicken.nei.guihook.GuiContainerManager;
 import codechicken.nei.guihook.IContainerInputHandler;
-import com.gtnh.findit.FindItConfig;
 import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 
-import java.util.WeakHashMap;
-
 public abstract class AbstractStackFinder implements IContainerInputHandler {
-
-
-
-    protected static final int MAX_RESPONSE_SIZE = 20;
-
-
 
     protected abstract String getKeyBindId();
 
