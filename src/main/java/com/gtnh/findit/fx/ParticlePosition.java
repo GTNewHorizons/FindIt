@@ -46,7 +46,6 @@ public class ParticlePosition extends EntityReddustFX {
 
     @Override
     public void renderParticle(final Tessellator tessellator, float partialTickTime, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
-        super.renderParticle(tessellator, partialTickTime, rotationX, rotationZ, rotationYZ, rotationXY, rotationXZ);
         tessellator.draw();
 
         GL11.glDisable(GL11.GL_DEPTH_TEST);
@@ -57,7 +56,6 @@ public class ParticlePosition extends EntityReddustFX {
 
         GL11.glEnable(GL11.GL_DEPTH_TEST);
         tessellator.startDrawingQuads();
-
     }
 
     public static void highlightBlocks(World world, List<ChunkPosition> positions) {
