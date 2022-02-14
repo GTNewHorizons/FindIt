@@ -1,17 +1,16 @@
 package com.gtnh.findit;
 
-import com.gtnh.findit.proxy.FindItCommon;
+import codechicken.nei.guihook.GuiContainerManager;
+import com.gtnh.findit.service.blockfinder.BlockFindService;
+import com.gtnh.findit.service.blockfinder.ClientBlockFindService;
+import com.gtnh.findit.service.cooldown.SearchCooldownService;
+import com.gtnh.findit.service.itemfinder.ClientItemFindService;
+import com.gtnh.findit.service.itemfinder.ItemFindService;
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.SidedProxy;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.network.NetworkRegistry;
-import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
-import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.common.config.Property;
-
-import java.io.File;
+import cpw.mods.fml.relauncher.Side;
 
 @Mod(
         modid = FindIt.MOD_ID,
@@ -27,53 +26,48 @@ public class FindIt {
     public static final String MOD_NAME = "GRADLETOKEN_MODNAME";
     public static final String VERSION = "GRADLETOKEN_VERSION";
 
-    // Config
-    public static int SEARCH_RADIUS = 16;
-
-    public static final SimpleNetworkWrapper NETWORK = NetworkRegistry.INSTANCE.newSimpleChannel(MOD_ID);
-
     @Mod.Instance(MOD_ID)
     public static FindIt INSTANCE;
 
-    @SidedProxy(serverSide = "com.gtnh.findit.proxy.FindItCommon", clientSide = "com.gtnh.findit.proxy.FindItClient")
-    public static FindItCommon proxy;
+    private boolean extraUtilitiesLoaded;
 
-
-    @Mod.EventHandler
-    public void preinit(FMLPreInitializationEvent event) {
-        this.setupConfig(event.getSuggestedConfigurationFile());
-        proxy.preinit(event);
-    }
-
+    private SearchCooldownService cooldownService;
+    private BlockFindService blockFindService;
+    private ItemFindService itemFindService;
 
     @Mod.EventHandler
-    public void init(FMLInitializationEvent event) {
-        proxy.init(event);
+    public void preInit(FMLPreInitializationEvent event) {
+        extraUtilitiesLoaded = Loader.isModLoaded("ExtraUtilities");
+        FindItConfig.setup(event.getSuggestedConfigurationFile());
+        boolean isClient = event.getSide() == Side.CLIENT;
+
+        cooldownService = new SearchCooldownService();
+        blockFindService = isClient ? new ClientBlockFindService() : new BlockFindService();
+        itemFindService = isClient ? new ClientItemFindService() : new ItemFindService();
     }
 
     @Mod.EventHandler
-    public void postinit(FMLPostInitializationEvent event) {
-        proxy.postinit(event);
-    }
-
-    public void setupConfig(final File file) {
-        final Configuration config = new Configuration(file);
-        try {
-            // Load config
-            config.load();
-
-            // Read props from config
-            Property searchRadiousProp = config.get(Configuration.CATEGORY_GENERAL,
-                    "SearchRadius", // Property name
-                    "16", // Default value
-                    "Radius to search within"); // Comment
-
-            FindIt.SEARCH_RADIUS = searchRadiousProp.getInt();
-        } catch (Exception e) {
-            // Failed reading/writing, just continue
-        } finally {
-            // Save props to config IF config changed
-            if (config.hasChanged()) config.save();
+    public void postInit(FMLPostInitializationEvent event) {
+        if (event.getSide() == Side.CLIENT && FindIt.isExtraUtilitiesLoaded()) {
+            GuiContainerManager.inputHandlers.removeIf((inputHandler) ->
+                    inputHandler.getClass().getName().equals("com.rwtema.extrautils.nei.ping.NEIPing")
+            );
         }
+    }
+
+    public static SearchCooldownService getCooldownService() {
+        return INSTANCE.cooldownService;
+    }
+
+    public static BlockFindService getBlockFindService() {
+        return INSTANCE.blockFindService;
+    }
+
+    public static ItemFindService getItemFindService() {
+        return INSTANCE.itemFindService;
+    }
+
+    public static boolean isExtraUtilitiesLoaded() {
+        return INSTANCE.extraUtilitiesLoaded;
     }
 }
