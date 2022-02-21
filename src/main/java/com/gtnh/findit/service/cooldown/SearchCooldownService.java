@@ -13,7 +13,7 @@ public class SearchCooldownService {
      * @return true if player has active cooldown
      */
     public boolean checkSearchCooldown(EntityPlayerMP player) {
-        long time = player.getEntityWorld().getTotalWorldTime();
+        long time = player.getServerForPlayer().func_73046_m().getTickCounter();
         Long lastTime = lastSearchTime.get(player);
 
         if (lastTime != null && time - lastTime < FindItConfig.SEARCH_COOLDOWN) {
