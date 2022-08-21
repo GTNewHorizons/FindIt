@@ -1,5 +1,6 @@
 package com.gtnh.findit.service.blockfinder;
 
+import codechicken.nei.NEIClientUtils;
 import codechicken.nei.api.API;
 import codechicken.nei.guihook.GuiContainerManager;
 import com.gtnh.findit.FindIt;
@@ -15,7 +16,7 @@ import org.lwjgl.input.Keyboard;
 public class ClientBlockFindService extends BlockFindService {
 
     public ClientBlockFindService() {
-        API.addKeyBind("gui.findit.find_block", Keyboard.KEY_Y);
+        API.addHashBind("gui.findit.find_block", Keyboard.KEY_Y + NEIClientUtils.SHIFT_HASH);
         GuiContainerManager.addInputHandler(new BlockFindInputHandler());
     }
 
