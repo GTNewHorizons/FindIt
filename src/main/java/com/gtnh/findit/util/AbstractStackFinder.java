@@ -15,8 +15,8 @@ public abstract class AbstractStackFinder implements IContainerInputHandler {
 
     @Override
     public boolean keyTyped(GuiContainer window, char c, int key) {
-        int keyBinding = NEIClientConfig.getKeyBinding(getKeyBindId());
-        if (key != keyBinding) {
+        
+        if (!NEIClientConfig.isKeyHashDown(getKeyBindId())) {
             return false;
         }
 

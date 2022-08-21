@@ -1,5 +1,6 @@
 package com.gtnh.findit.service.itemfinder;
 
+import codechicken.nei.NEIClientUtils;
 import codechicken.nei.api.API;
 import codechicken.nei.guihook.GuiContainerManager;
 import com.gtnh.findit.FindIt;
@@ -32,7 +33,7 @@ public class ClientItemFindService extends ItemFindService {
 
     public ClientItemFindService() {
         if (!FindIt.isExtraUtilitiesLoaded()) {
-            API.addKeyBind("gui.findit.find_item", Keyboard.KEY_T);
+            API.addHashBind("gui.findit.find_item", Keyboard.KEY_T + NEIClientUtils.SHIFT_HASH);
         }
         GuiContainerManager.addInputHandler(new ItemFindInputHandler());
 
