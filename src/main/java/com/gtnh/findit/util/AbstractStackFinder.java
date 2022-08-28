@@ -21,7 +21,9 @@ public abstract class AbstractStackFinder implements IContainerInputHandler {
         }
 
         LayoutManager layout = LayoutManager.instance();
-        if (layout == null || LayoutManager.itemPanel == null || NEIClientConfig.isHidden()) {
+        if (layout == null || LayoutManager.itemPanel == null || NEIClientConfig.isHidden()
+                || LayoutManager.searchField == null || LayoutManager.searchField.focused()
+        ) {
             return false;
         }
 
