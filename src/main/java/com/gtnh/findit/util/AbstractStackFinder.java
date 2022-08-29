@@ -1,5 +1,6 @@
 package com.gtnh.findit.util;
 
+import appeng.client.gui.implementations.*;
 import codechicken.nei.LayoutManager;
 import codechicken.nei.NEIClientConfig;
 import codechicken.nei.guihook.GuiContainerManager;
@@ -16,6 +17,16 @@ public abstract class AbstractStackFinder implements IContainerInputHandler {
     @Override
     public boolean keyTyped(GuiContainer window, char c, int key) {
         
+        return false;
+    }
+
+    @Override
+    public void onKeyTyped(GuiContainer guiContainer, char c, int i) {
+
+    }
+
+    @Override
+    public boolean lastKeyTyped(GuiContainer guiContainer, char c, int i) {
         if (!NEIClientConfig.isKeyHashDown(getKeyBindId())) {
             return false;
         }
@@ -27,21 +38,11 @@ public abstract class AbstractStackFinder implements IContainerInputHandler {
             return false;
         }
 
-        ItemStack stack = GuiContainerManager.getStackMouseOver(window);
+        ItemStack stack = GuiContainerManager.getStackMouseOver(guiContainer);
         if (stack == null || stack.getItem() == null) {
             return false;
         }
         return findStack(stack);
-    }
-
-    @Override
-    public void onKeyTyped(GuiContainer guiContainer, char c, int i) {
-
-    }
-
-    @Override
-    public boolean lastKeyTyped(GuiContainer guiContainer, char c, int i) {
-        return false;
     }
 
     @Override
