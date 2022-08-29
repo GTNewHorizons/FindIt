@@ -16,7 +16,6 @@ public abstract class AbstractStackFinder implements IContainerInputHandler {
 
     @Override
     public boolean keyTyped(GuiContainer window, char c, int key) {
-        
         return false;
     }
 
@@ -32,9 +31,7 @@ public abstract class AbstractStackFinder implements IContainerInputHandler {
         }
 
         LayoutManager layout = LayoutManager.instance();
-        if (layout == null || LayoutManager.itemPanel == null || NEIClientConfig.isHidden()
-                || LayoutManager.searchField == null || LayoutManager.searchField.focused()
-        ) {
+        if (layout == null || LayoutManager.itemPanel == null || NEIClientConfig.isHidden()) {
             return false;
         }
 
