@@ -33,7 +33,7 @@ public class ClientItemFindService extends ItemFindService {
 
     public ClientItemFindService() {
         if (!FindIt.isExtraUtilitiesLoaded()) {
-            API.addHashBind("gui.findit.find_item", Keyboard.KEY_T + NEIClientUtils.SHIFT_HASH);
+            API.addHashBind("gui.findit.find_item", Keyboard.KEY_T);
         }
         GuiContainerManager.addInputHandler(new ItemFindInputHandler());
 

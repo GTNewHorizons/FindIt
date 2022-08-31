@@ -16,7 +16,7 @@ import org.lwjgl.input.Keyboard;
 public class ClientBlockFindService extends BlockFindService {
 
     public ClientBlockFindService() {
-        API.addHashBind("gui.findit.find_block", Keyboard.KEY_Y + NEIClientUtils.SHIFT_HASH);
+        API.addHashBind("gui.findit.find_block", Keyboard.KEY_Y);
         GuiContainerManager.addInputHandler(new BlockFindInputHandler());
     }
 
