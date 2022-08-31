@@ -1,5 +1,6 @@
 package com.gtnh.findit.util;
 
+import appeng.client.gui.implementations.*;
 import codechicken.nei.LayoutManager;
 import codechicken.nei.NEIClientConfig;
 import codechicken.nei.guihook.GuiContainerManager;
@@ -15,21 +16,7 @@ public abstract class AbstractStackFinder implements IContainerInputHandler {
 
     @Override
     public boolean keyTyped(GuiContainer window, char c, int key) {
-        
-        if (!NEIClientConfig.isKeyHashDown(getKeyBindId())) {
-            return false;
-        }
-
-        LayoutManager layout = LayoutManager.instance();
-        if (layout == null || LayoutManager.itemPanel == null || NEIClientConfig.isHidden()) {
-            return false;
-        }
-
-        ItemStack stack = GuiContainerManager.getStackMouseOver(window);
-        if (stack == null || stack.getItem() == null) {
-            return false;
-        }
-        return findStack(stack);
+        return false;
     }
 
     @Override
@@ -39,7 +26,20 @@ public abstract class AbstractStackFinder implements IContainerInputHandler {
 
     @Override
     public boolean lastKeyTyped(GuiContainer guiContainer, char c, int i) {
-        return false;
+        if (!NEIClientConfig.isKeyHashDown(getKeyBindId())) {
+            return false;
+        }
+
+        LayoutManager layout = LayoutManager.instance();
+        if (layout == null || LayoutManager.itemPanel == null || NEIClientConfig.isHidden()) {
+            return false;
+        }
+
+        ItemStack stack = GuiContainerManager.getStackMouseOver(guiContainer);
+        if (stack == null || stack.getItem() == null) {
+            return false;
+        }
+        return findStack(stack);
     }
 
     @Override
