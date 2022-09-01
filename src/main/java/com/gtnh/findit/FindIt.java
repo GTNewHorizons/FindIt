@@ -1,6 +1,5 @@
 package com.gtnh.findit;
 
-import codechicken.nei.guihook.GuiContainerManager;
 import com.gtnh.findit.service.blockfinder.BlockFindService;
 import com.gtnh.findit.service.blockfinder.ClientBlockFindService;
 import com.gtnh.findit.service.cooldown.SearchCooldownService;
@@ -48,11 +47,6 @@ public class FindIt {
 
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event) {
-        if (event.getSide() == Side.CLIENT && FindIt.isExtraUtilitiesLoaded()) {
-            GuiContainerManager.inputHandlers.removeIf((inputHandler) ->
-                    inputHandler.getClass().getName().equals("com.rwtema.extrautils.nei.ping.NEIPing")
-            );
-        }
     }
 
     public static SearchCooldownService getCooldownService() {

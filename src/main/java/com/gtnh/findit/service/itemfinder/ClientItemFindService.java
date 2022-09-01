@@ -1,7 +1,7 @@
 package com.gtnh.findit.service.itemfinder;
 
-import codechicken.nei.NEIClientUtils;
 import codechicken.nei.api.API;
+import codechicken.nei.event.NEIConfigsLoadedEvent;
 import codechicken.nei.guihook.GuiContainerManager;
 import com.gtnh.findit.FindIt;
 import com.gtnh.findit.FindItNetwork;
@@ -38,6 +38,7 @@ public class ClientItemFindService extends ItemFindService {
         GuiContainerManager.addInputHandler(new ItemFindInputHandler());
 
         MinecraftForge.EVENT_BUS.register(new GuiListener());
+        MinecraftForge.EVENT_BUS.register(new NEIEventListener());
         FMLCommonHandler.instance().bus().register(new TickListener());
     }
 
@@ -137,6 +138,17 @@ public class ClientItemFindService extends ItemFindService {
                 if (stack != null && stack.getItem() == targetItem && stack.getItemDamage() == targetMeta) {
                     highlightedSlots.add(slotId);
                 }
+            }
+        }
+    }
+
+    public static class NEIEventListener {
+        @SubscribeEvent
+        public void onNEIConfigsLoaded(NEIConfigsLoadedEvent event) {
+            if (FindIt.isExtraUtilitiesLoaded()) {
+                GuiContainerManager.inputHandlers.removeIf((inputHandler) ->
+                        inputHandler.getClass().getName().equals("com.rwtema.extrautils.nei.ping.NEIPing")
+                );
             }
         }
     }
