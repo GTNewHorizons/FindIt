@@ -1,13 +1,15 @@
 package com.gtnh.findit.service.itemfinder;
 
+import net.minecraft.item.ItemStack;
+
 import com.gtnh.findit.FindIt;
 import com.gtnh.findit.service.blockfinder.BlockFoundResponse;
 import com.gtnh.findit.util.ProtoUtils;
+
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.item.ItemStack;
 
 public class FindItemRequest implements IMessage {
 
@@ -17,8 +19,7 @@ public class FindItemRequest implements IMessage {
         this.stack = stack;
     }
 
-    public FindItemRequest() {
-    }
+    public FindItemRequest() {}
 
     @Override
     public void fromBytes(ByteBuf buf) {

@@ -1,16 +1,8 @@
 package com.gtnh.findit.service.itemfinder;
 
-import codechicken.nei.api.API;
-import codechicken.nei.event.NEIConfigsLoadedEvent;
-import codechicken.nei.guihook.GuiContainerManager;
-import com.gtnh.findit.FindIt;
-import com.gtnh.findit.FindItNetwork;
-import com.gtnh.findit.fx.ParticlePosition;
-import com.gtnh.findit.fx.SlotHighlighter;
-import com.gtnh.findit.util.AbstractStackFinder;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.TickEvent;
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.client.gui.GuiScreen;
@@ -22,10 +14,22 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
+
 import org.lwjgl.input.Keyboard;
 
-import java.util.ArrayList;
-import java.util.List;
+import codechicken.nei.api.API;
+import codechicken.nei.event.NEIConfigsLoadedEvent;
+import codechicken.nei.guihook.GuiContainerManager;
+
+import com.gtnh.findit.FindIt;
+import com.gtnh.findit.FindItNetwork;
+import com.gtnh.findit.fx.ParticlePosition;
+import com.gtnh.findit.fx.SlotHighlighter;
+import com.gtnh.findit.util.AbstractStackFinder;
+
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.TickEvent;
 
 public class ClientItemFindService extends ItemFindService {
 
@@ -50,7 +54,10 @@ public class ClientItemFindService extends ItemFindService {
     }
 
     public void handleSlotHighlight(HighlightSlotsPacket packet) {
-        highlightData = new ContainerHighlightData(packet.getWindowId(), packet.getTargetStack(), packet.getTargetSlots());
+        highlightData = new ContainerHighlightData(
+                packet.getWindowId(),
+                packet.getTargetStack(),
+                packet.getTargetSlots());
     }
 
     public class TickListener {
@@ -110,6 +117,7 @@ public class ClientItemFindService extends ItemFindService {
     }
 
     private static class ContainerHighlightData {
+
         private final int windowId;
         private final ItemStack targetStack;
         private final List<Integer> targetSlots;
@@ -143,12 +151,13 @@ public class ClientItemFindService extends ItemFindService {
     }
 
     public static class NEIEventListener {
+
         @SubscribeEvent
         public void onNEIConfigsLoaded(NEIConfigsLoadedEvent event) {
             if (FindIt.isExtraUtilitiesLoaded()) {
-                GuiContainerManager.inputHandlers.removeIf((inputHandler) ->
-                        inputHandler.getClass().getName().equals("com.rwtema.extrautils.nei.ping.NEIPing")
-                );
+                GuiContainerManager.inputHandlers.removeIf(
+                        (inputHandler) -> inputHandler.getClass().getName()
+                                .equals("com.rwtema.extrautils.nei.ping.NEIPing"));
             }
         }
     }

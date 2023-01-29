@@ -1,15 +1,17 @@
 package com.gtnh.findit.service.itemfinder;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import net.minecraft.item.ItemStack;
+
 import com.gtnh.findit.service.blockfinder.BlockFoundResponse;
 import com.gtnh.findit.util.ProtoUtils;
+
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.item.ItemStack;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class HighlightSlotsPacket implements IMessage {
 
@@ -23,8 +25,7 @@ public class HighlightSlotsPacket implements IMessage {
         this.targetSlots = targetSlots;
     }
 
-    public HighlightSlotsPacket() {
-    }
+    public HighlightSlotsPacket() {}
 
     @Override
     public void fromBytes(ByteBuf buf) {

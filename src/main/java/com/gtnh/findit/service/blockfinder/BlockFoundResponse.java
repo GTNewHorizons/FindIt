@@ -1,16 +1,18 @@
 package com.gtnh.findit.service.blockfinder;
 
+import java.util.List;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.world.ChunkPosition;
+
 import com.gtnh.findit.util.ProtoUtils;
+
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.client.Minecraft;
-import net.minecraft.world.ChunkPosition;
-
-import java.util.List;
 
 public class BlockFoundResponse implements IMessage {
 
@@ -20,8 +22,7 @@ public class BlockFoundResponse implements IMessage {
         this.positions = positions;
     }
 
-    public BlockFoundResponse() {
-    }
+    public BlockFoundResponse() {}
 
     public List<ChunkPosition> getPositions() {
         return positions;

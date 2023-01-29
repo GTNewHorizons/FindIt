@@ -1,25 +1,28 @@
 package com.gtnh.findit.service.blockfinder;
 
-import com.gtnh.findit.FindIt;
-import com.gtnh.findit.FindItConfig;
-import com.gtnh.findit.FindItNetwork;
-import com.gtnh.findit.util.WorldUtils;
-import cpw.mods.fml.relauncher.Side;
-import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.ChunkPosition;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.gtnh.findit.FindIt;
+import com.gtnh.findit.FindItConfig;
+import com.gtnh.findit.FindItNetwork;
+import com.gtnh.findit.util.WorldUtils;
+
+import cpw.mods.fml.relauncher.Side;
+import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 
 public class BlockFindService {
 
     public BlockFindService() {
-        FindItNetwork.registerMessage(FindBlockRequest.Handler.class, FindBlockRequest.class,  Side.SERVER);
-        FindItNetwork.registerMessage(BlockFoundResponse.Handler.class, BlockFoundResponse.class,  Side.CLIENT);
+        FindItNetwork.registerMessage(FindBlockRequest.Handler.class, FindBlockRequest.class, Side.SERVER);
+        FindItNetwork.registerMessage(BlockFoundResponse.Handler.class, BlockFoundResponse.class, Side.CLIENT);
     }
+
     public void handleRequest(EntityPlayerMP player, FindBlockRequest request) {
         if (FindIt.getCooldownService().checkSearchCooldown(player)) {
             return;

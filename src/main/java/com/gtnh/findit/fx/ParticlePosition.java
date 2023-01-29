@@ -1,13 +1,14 @@
 package com.gtnh.findit.fx;
 
+import java.util.List;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EntityReddustFX;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.world.ChunkPosition;
 import net.minecraft.world.World;
-import org.lwjgl.opengl.GL11;
 
-import java.util.List;
+import org.lwjgl.opengl.GL11;
 
 public class ParticlePosition extends EntityReddustFX {
 
@@ -20,8 +21,7 @@ public class ParticlePosition extends EntityReddustFX {
                 world,
                 pos.chunkPosX + (0.5 + (world.rand.nextDouble() - 0.5) * world.rand.nextDouble()),
                 pos.chunkPosY + (0.5 + (world.rand.nextDouble() - 0.5) * world.rand.nextDouble()),
-                pos.chunkPosZ + (0.5 + (world.rand.nextDouble() - 0.5) * world.rand.nextDouble())
-        );
+                pos.chunkPosZ + (0.5 + (world.rand.nextDouble() - 0.5) * world.rand.nextDouble()));
         version = validVersion;
     }
 
@@ -45,7 +45,8 @@ public class ParticlePosition extends EntityReddustFX {
     }
 
     @Override
-    public void renderParticle(final Tessellator tessellator, float partialTickTime, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
+    public void renderParticle(final Tessellator tessellator, float partialTickTime, float rotationX, float rotationZ,
+            float rotationYZ, float rotationXY, float rotationXZ) {
         tessellator.draw();
 
         GL11.glDisable(GL11.GL_DEPTH_TEST);

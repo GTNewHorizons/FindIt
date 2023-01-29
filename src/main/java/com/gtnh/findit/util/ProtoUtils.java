@@ -1,13 +1,14 @@
 package com.gtnh.findit.util;
 
-import io.netty.buffer.ByteBuf;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.world.ChunkPosition;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import io.netty.buffer.ByteBuf;
 
 public class ProtoUtils {
 

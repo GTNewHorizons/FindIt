@@ -1,19 +1,23 @@
 package com.gtnh.findit.fx;
 
-import com.gtnh.findit.FindIt;
+import java.util.List;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.inventory.Slot;
 import net.minecraft.util.ResourceLocation;
+
 import org.lwjgl.opengl.GL11;
 
-import java.util.List;
+import com.gtnh.findit.FindIt;
 
 public class SlotHighlighter {
 
-    private static final ResourceLocation highlightTexture = new ResourceLocation(FindIt.MOD_ID, "textures/gui/slot_highlight.png");
+    private static final ResourceLocation highlightTexture = new ResourceLocation(
+            FindIt.MOD_ID,
+            "textures/gui/slot_highlight.png");
 
     public static void highlightSlots(GuiContainer gui, List<Integer> slots, int color) {
         if (slots.isEmpty()) {

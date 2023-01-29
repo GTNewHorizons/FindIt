@@ -1,9 +1,10 @@
 package com.gtnh.findit.service.cooldown;
 
-import com.gtnh.findit.FindItConfig;
+import java.util.WeakHashMap;
+
 import net.minecraft.entity.player.EntityPlayerMP;
 
-import java.util.WeakHashMap;
+import com.gtnh.findit.FindItConfig;
 
 public class SearchCooldownService {
 

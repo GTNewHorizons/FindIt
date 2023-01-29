@@ -5,6 +5,7 @@ import com.gtnh.findit.service.blockfinder.ClientBlockFindService;
 import com.gtnh.findit.service.cooldown.SearchCooldownService;
 import com.gtnh.findit.service.itemfinder.ClientItemFindService;
 import com.gtnh.findit.service.itemfinder.ItemFindService;
+
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
@@ -16,8 +17,7 @@ import cpw.mods.fml.relauncher.Side;
         name = FindIt.MOD_NAME,
         version = FindIt.VERSION,
         dependencies = "required-after:NotEnoughItems;required-after:gregtech",
-        acceptableRemoteVersions = "*"
-)
+        acceptableRemoteVersions = "*")
 public class FindIt {
 
     // Mod info
@@ -46,8 +46,7 @@ public class FindIt {
     }
 
     @Mod.EventHandler
-    public void postInit(FMLPostInitializationEvent event) {
-    }
+    public void postInit(FMLPostInitializationEvent event) {}
 
     public static SearchCooldownService getCooldownService() {
         return INSTANCE.cooldownService;

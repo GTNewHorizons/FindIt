@@ -1,17 +1,19 @@
 package com.gtnh.findit.service.itemfinder;
 
+import java.util.List;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.item.ItemStack;
+import net.minecraft.world.ChunkPosition;
+
 import com.gtnh.findit.util.ProtoUtils;
+
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.client.Minecraft;
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.ChunkPosition;
-
-import java.util.List;
 
 public class ItemFoundResponse implements IMessage {
 
@@ -23,8 +25,7 @@ public class ItemFoundResponse implements IMessage {
         this.positions = positions;
     }
 
-    public ItemFoundResponse() {
-    }
+    public ItemFoundResponse() {}
 
     @Override
     public void fromBytes(ByteBuf buf) {

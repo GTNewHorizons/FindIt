@@ -1,12 +1,14 @@
 package com.gtnh.findit.service.blockfinder;
 
+import net.minecraft.block.Block;
+import net.minecraft.init.Blocks;
+
 import com.gtnh.findit.FindIt;
+
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.block.Block;
-import net.minecraft.init.Blocks;
 
 public class FindBlockRequest implements IMessage {
 
@@ -18,8 +20,7 @@ public class FindBlockRequest implements IMessage {
         this.metaToFind = meta;
     }
 
-    public FindBlockRequest() {
-    }
+    public FindBlockRequest() {}
 
     @Override
     public void fromBytes(ByteBuf buf) {

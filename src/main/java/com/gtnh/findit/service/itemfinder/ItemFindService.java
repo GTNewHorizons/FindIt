@@ -1,11 +1,7 @@
 package com.gtnh.findit.service.itemfinder;
 
-import com.gtnh.findit.FindIt;
-import com.gtnh.findit.FindItConfig;
-import com.gtnh.findit.FindItNetwork;
-import com.gtnh.findit.util.WorldUtils;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.relauncher.Side;
+import java.util.*;
+
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
@@ -19,7 +15,13 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerOpenContainerEvent;
 
-import java.util.*;
+import com.gtnh.findit.FindIt;
+import com.gtnh.findit.FindItConfig;
+import com.gtnh.findit.FindItNetwork;
+import com.gtnh.findit.util.WorldUtils;
+
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.relauncher.Side;
 
 public class ItemFindService {
 
@@ -53,8 +55,7 @@ public class ItemFindService {
 
         List<ChunkPosition> positions = new ArrayList<>();
 
-        tileIter:
-        for (TileEntity tileEntity : WorldUtils.getTileEntitiesAround(player, FindItConfig.SEARCH_RADIUS)) {
+        tileIter: for (TileEntity tileEntity : WorldUtils.getTileEntitiesAround(player, FindItConfig.SEARCH_RADIUS)) {
             try {
                 if (!(tileEntity instanceof IInventory)) {
                     continue;
@@ -82,9 +83,9 @@ public class ItemFindService {
 
         if (!positions.isEmpty()) {
             ItemFoundResult foundResult = new ItemFindService.ItemFoundResult(
-                    request.getStackToFind(), positions,
-                    player.getEntityWorld().getTotalWorldTime()
-            );
+                    request.getStackToFind(),
+                    positions,
+                    player.getEntityWorld().getTotalWorldTime());
 
             lastResults.put(player, foundResult);
             FindItNetwork.CHANNEL.sendTo(new ItemFoundResponse(request.getStackToFind(), positions), player);
@@ -129,15 +130,15 @@ public class ItemFindService {
 
             FindItNetwork.CHANNEL.sendTo(
                     new HighlightSlotsPacket(container.windowId, lastFoundResult.foundStack, targetSlots),
-                    player
-            );
+                    player);
         }
     }
 
     private IInventory getSlotTrueInventory(Slot slot) {
         if (slot.inventory instanceof InventoryLargeChest) {
             InventoryLargeChest largeChest = (InventoryLargeChest) slot.inventory;
-            return slot.slotNumber < largeChest.upperChest.getSizeInventory() ? largeChest.upperChest : largeChest.lowerChest;
+            return slot.slotNumber < largeChest.upperChest.getSizeInventory() ? largeChest.upperChest
+                    : largeChest.lowerChest;
         }
         return slot.inventory;
     }
@@ -165,6 +166,7 @@ public class ItemFindService {
     }
 
     public static class ItemFoundResult {
+
         private final ItemStack foundStack;
         private final Set<ChunkPosition> positions = new HashSet<>();
         private final long responseTime;
