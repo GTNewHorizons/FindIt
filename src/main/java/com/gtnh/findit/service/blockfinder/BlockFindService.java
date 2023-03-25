@@ -37,7 +37,7 @@ public class BlockFindService {
                 }
 
                 int tileMeta;
-                if (tileEntity instanceof IGregTechTileEntity) {
+                if (FindIt.isGregTechLoaded() && tileEntity instanceof IGregTechTileEntity) {
                     tileMeta = ((IGregTechTileEntity) tileEntity).getMetaTileID();
                 } else {
                     tileMeta = tileEntity.getBlockMetadata();

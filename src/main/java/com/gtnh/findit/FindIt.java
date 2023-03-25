@@ -16,7 +16,7 @@ import cpw.mods.fml.relauncher.Side;
         modid = FindIt.MOD_ID,
         name = FindIt.MOD_NAME,
         version = FindIt.VERSION,
-        dependencies = "required-after:NotEnoughItems;required-after:gregtech",
+        dependencies = "required-after:NotEnoughItems;after:gregtech",
         acceptableRemoteVersions = "*")
 public class FindIt {
 
@@ -29,6 +29,7 @@ public class FindIt {
     public static FindIt INSTANCE;
 
     private boolean extraUtilitiesLoaded;
+    private boolean gregTechloaded;
 
     private SearchCooldownService cooldownService;
     private BlockFindService blockFindService;
@@ -36,7 +37,8 @@ public class FindIt {
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
-        extraUtilitiesLoaded = Loader.isModLoaded("ExtraUtilities");
+        this.extraUtilitiesLoaded = Loader.isModLoaded("ExtraUtilities");
+        this.gregTechloaded = Loader.isModLoaded("gregtech");
         FindItConfig.setup(event.getSuggestedConfigurationFile());
         boolean isClient = event.getSide() == Side.CLIENT;
 
@@ -62,5 +64,9 @@ public class FindIt {
 
     public static boolean isExtraUtilitiesLoaded() {
         return INSTANCE.extraUtilitiesLoaded;
+    }
+
+    public static boolean isGregTechLoaded() {
+        return INSTANCE.gregTechloaded;
     }
 }
