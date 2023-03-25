@@ -33,6 +33,7 @@ public class WorldUtils {
             for (int cz = z1 >> 4; cz <= cz1; cz++) {
                 Chunk chunk = world.getChunkFromChunkCoords(cx, cz);
                 if (chunk != null) {
+                    @SuppressWarnings("unchecked")
                     Map<ChunkPosition, TileEntity> tiles = chunk.chunkTileEntityMap;
                     for (TileEntity tile : tiles.values()) {
                         if (!tile.isInvalid() && tile.xCoord >= x1

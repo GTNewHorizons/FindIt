@@ -8,7 +8,6 @@ import com.gtnh.findit.service.itemfinder.ItemFindService;
 
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.relauncher.Side;
 
@@ -16,19 +15,21 @@ import cpw.mods.fml.relauncher.Side;
         modid = FindIt.MOD_ID,
         name = FindIt.MOD_NAME,
         version = FindIt.VERSION,
-        dependencies = "required-after:NotEnoughItems;required-after:gregtech",
-        acceptableRemoteVersions = "*")
+        dependencies = "required-after:NotEnoughItems;after:gregtech",
+        acceptableRemoteVersions = "*",
+        acceptedMinecraftVersions = "[1.7.10]")
 public class FindIt {
 
     // Mod info
-    public static final String MOD_ID = "GRADLETOKEN_MODID";
-    public static final String MOD_NAME = "GRADLETOKEN_MODNAME";
-    public static final String VERSION = "GRADLETOKEN_VERSION";
+    public static final String MOD_ID = "findit";
+    public static final String MOD_NAME = "FindIt";
+    public static final String VERSION = Tags.VERSION;
 
     @Mod.Instance(MOD_ID)
     public static FindIt INSTANCE;
 
     private boolean extraUtilitiesLoaded;
+    private boolean gregTechloaded;
 
     private SearchCooldownService cooldownService;
     private BlockFindService blockFindService;
@@ -36,17 +37,15 @@ public class FindIt {
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
-        extraUtilitiesLoaded = Loader.isModLoaded("ExtraUtilities");
+        this.extraUtilitiesLoaded = Loader.isModLoaded("ExtraUtilities");
+        this.gregTechloaded = Loader.isModLoaded("gregtech");
         FindItConfig.setup(event.getSuggestedConfigurationFile());
         boolean isClient = event.getSide() == Side.CLIENT;
 
-        cooldownService = new SearchCooldownService();
-        blockFindService = isClient ? new ClientBlockFindService() : new BlockFindService();
-        itemFindService = isClient ? new ClientItemFindService() : new ItemFindService();
+        this.cooldownService = new SearchCooldownService();
+        this.blockFindService = isClient ? new ClientBlockFindService() : new BlockFindService();
+        this.itemFindService = isClient ? new ClientItemFindService() : new ItemFindService();
     }
-
-    @Mod.EventHandler
-    public void postInit(FMLPostInitializationEvent event) {}
 
     public static SearchCooldownService getCooldownService() {
         return INSTANCE.cooldownService;
@@ -62,5 +61,9 @@ public class FindIt {
 
     public static boolean isExtraUtilitiesLoaded() {
         return INSTANCE.extraUtilitiesLoaded;
+    }
+
+    public static boolean isGregTechLoaded() {
+        return INSTANCE.gregTechloaded;
     }
 }

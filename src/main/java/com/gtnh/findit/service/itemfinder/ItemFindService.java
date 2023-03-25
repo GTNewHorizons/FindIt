@@ -101,6 +101,7 @@ public class ItemFindService {
             return;
         }
 
+        @SuppressWarnings("unchecked")
         List<Slot> slots = (List<Slot>) container.inventorySlots;
         List<Integer> targetSlots = new ArrayList<>();
         Set<ChunkPosition> tilePositions = new HashSet<>();
