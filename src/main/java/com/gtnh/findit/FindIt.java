@@ -8,7 +8,6 @@ import com.gtnh.findit.service.itemfinder.ItemFindService;
 
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.relauncher.Side;
 
@@ -17,7 +16,8 @@ import cpw.mods.fml.relauncher.Side;
         name = FindIt.MOD_NAME,
         version = FindIt.VERSION,
         dependencies = "required-after:NotEnoughItems;after:gregtech",
-        acceptableRemoteVersions = "*")
+        acceptableRemoteVersions = "*",
+        acceptedMinecraftVersions = "[1.7.10]")
 public class FindIt {
 
     // Mod info
@@ -42,13 +42,10 @@ public class FindIt {
         FindItConfig.setup(event.getSuggestedConfigurationFile());
         boolean isClient = event.getSide() == Side.CLIENT;
 
-        cooldownService = new SearchCooldownService();
-        blockFindService = isClient ? new ClientBlockFindService() : new BlockFindService();
-        itemFindService = isClient ? new ClientItemFindService() : new ItemFindService();
+        this.cooldownService = new SearchCooldownService();
+        this.blockFindService = isClient ? new ClientBlockFindService() : new BlockFindService();
+        this.itemFindService = isClient ? new ClientItemFindService() : new ItemFindService();
     }
-
-    @Mod.EventHandler
-    public void postInit(FMLPostInitializationEvent event) {}
 
     public static SearchCooldownService getCooldownService() {
         return INSTANCE.cooldownService;

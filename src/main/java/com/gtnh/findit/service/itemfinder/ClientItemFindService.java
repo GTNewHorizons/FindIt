@@ -132,6 +132,7 @@ public class ClientItemFindService extends ItemFindService {
         public void updateHighlightedSlots(GuiContainer gui) {
             highlightedSlots.clear();
 
+            @SuppressWarnings("unchecked")
             List<Slot> slots = (List<Slot>) gui.inventorySlots.inventorySlots;
             Item targetItem = targetStack.getItem();
             int targetMeta = targetStack.getItemDamage();
