@@ -21,9 +21,9 @@ import cpw.mods.fml.relauncher.Side;
 public class FindIt {
 
     // Mod info
-    public static final String MOD_ID = "GRADLETOKEN_MODID";
-    public static final String MOD_NAME = "GRADLETOKEN_MODNAME";
-    public static final String VERSION = "GRADLETOKEN_VERSION";
+    public static final String MOD_ID = "findit";
+    public static final String MOD_NAME = "FindIt";
+    public static final String VERSION = Tags.VERSION;
 
     @Mod.Instance(MOD_ID)
     public static FindIt INSTANCE;
