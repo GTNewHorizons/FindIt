@@ -7,13 +7,13 @@ import net.minecraft.item.ItemStack;
 
 import org.lwjgl.input.Keyboard;
 
-import codechicken.nei.api.API;
-import codechicken.nei.guihook.GuiContainerManager;
-
 import com.gtnh.findit.FindIt;
 import com.gtnh.findit.FindItNetwork;
 import com.gtnh.findit.fx.ParticlePosition;
 import com.gtnh.findit.util.AbstractStackFinder;
+
+import codechicken.nei.api.API;
+import codechicken.nei.guihook.GuiContainerManager;
 
 public class ClientBlockFindService extends BlockFindService {
 

@@ -17,16 +17,15 @@ import net.minecraftforge.common.MinecraftForge;
 
 import org.lwjgl.input.Keyboard;
 
-import codechicken.nei.api.API;
-import codechicken.nei.event.NEIConfigsLoadedEvent;
-import codechicken.nei.guihook.GuiContainerManager;
-
 import com.gtnh.findit.FindIt;
 import com.gtnh.findit.FindItNetwork;
 import com.gtnh.findit.fx.ParticlePosition;
 import com.gtnh.findit.fx.SlotHighlighter;
 import com.gtnh.findit.util.AbstractStackFinder;
 
+import codechicken.nei.api.API;
+import codechicken.nei.event.NEIConfigsLoadedEvent;
+import codechicken.nei.guihook.GuiContainerManager;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
