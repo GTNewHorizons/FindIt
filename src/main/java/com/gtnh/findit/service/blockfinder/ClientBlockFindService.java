@@ -1,10 +1,14 @@
 package com.gtnh.findit.service.blockfinder;
 
+import com.gtnh.findit.service.itemfinder.ItemFoundResponse;
+import com.gtnh.findit.util.AxisUtils;
 import net.minecraft.block.Block;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 
+import net.minecraft.util.Vec3;
+import net.minecraft.world.ChunkPosition;
 import org.lwjgl.input.Keyboard;
 
 import com.gtnh.findit.FindIt;
@@ -25,6 +29,17 @@ public class ClientBlockFindService extends BlockFindService {
     public void handleResponse(EntityClientPlayerMP player, BlockFoundResponse response) {
         player.closeScreen();
         ParticlePosition.highlightBlocks(player.worldObj, response.getPositions());
+        lookAtTarget(player, response);
+    }
+
+    public void lookAtTarget(EntityClientPlayerMP player, BlockFoundResponse response){
+        Vec3 playerVec = player.getPosition(1.0F);
+        ChunkPosition first = response.getPositions().remove(0);
+
+        AxisUtils.AxisPair pair = AxisUtils.calculateAxisPair(playerVec, first);
+
+        player.rotationYaw = pair.yaw();
+        player.rotationPitch = pair.pitch();
     }
 
     private static class BlockFindInputHandler extends AbstractStackFinder {
