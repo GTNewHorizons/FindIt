@@ -1,14 +1,11 @@
 package com.gtnh.findit.service.blockfinder;
 
-import com.gtnh.findit.service.itemfinder.ItemFoundResponse;
-import com.gtnh.findit.util.AxisUtils;
+import com.gtnh.findit.FindItConfig;
 import net.minecraft.block.Block;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 
-import net.minecraft.util.Vec3;
-import net.minecraft.world.ChunkPosition;
 import org.lwjgl.input.Keyboard;
 
 import com.gtnh.findit.FindIt;
@@ -18,6 +15,8 @@ import com.gtnh.findit.util.AbstractStackFinder;
 
 import codechicken.nei.api.API;
 import codechicken.nei.guihook.GuiContainerManager;
+
+import static com.gtnh.findit.util.ClientFinderHelperUtils.lookAtTarget;
 
 public class ClientBlockFindService extends BlockFindService {
 
@@ -29,17 +28,10 @@ public class ClientBlockFindService extends BlockFindService {
     public void handleResponse(EntityClientPlayerMP player, BlockFoundResponse response) {
         player.closeScreen();
         ParticlePosition.highlightBlocks(player.worldObj, response.getPositions());
-        lookAtTarget(player, response);
-    }
 
-    public void lookAtTarget(EntityClientPlayerMP player, BlockFoundResponse response){
-        Vec3 playerVec = player.getPosition(1.0F);
-        ChunkPosition first = response.getPositions().remove(0);
-
-        AxisUtils.AxisPair pair = AxisUtils.calculateAxisPair(playerVec, first);
-
-        player.rotationYaw = pair.yaw();
-        player.rotationPitch = pair.pitch();
+        if (FindItConfig.ENABLE_ROTATE_VIEW) {
+            lookAtTarget(player, response);
+        }
     }
 
     private static class BlockFindInputHandler extends AbstractStackFinder {

@@ -1,6 +1,6 @@
 package com.gtnh.findit.service.itemfinder;
 
-import com.gtnh.findit.util.AxisUtils;
+import com.gtnh.findit.FindItConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.client.gui.GuiScreen;
@@ -9,8 +9,6 @@ import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Vec3;
-import net.minecraft.world.ChunkPosition;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -33,6 +31,8 @@ import cpw.mods.fml.common.gameevent.TickEvent;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.gtnh.findit.util.ClientFinderHelperUtils.lookAtTarget;
+
 public class ClientItemFindService extends ItemFindService {
 
     private ContainerHighlightData highlightData = null;
@@ -53,17 +53,10 @@ public class ClientItemFindService extends ItemFindService {
 
         player.closeScreen();
         ParticlePosition.highlightBlocks(world, response.getPositions());
-        lookAtTarget(player,response);
-    }
 
-    public void lookAtTarget(EntityClientPlayerMP player, ItemFoundResponse response){
-        Vec3 playerVec = player.getPosition(1.0F);
-        ChunkPosition first = response.getPositions().remove(0);
-
-        AxisUtils.AxisPair pair = AxisUtils.calculateAxisPair(playerVec, first);
-
-        player.rotationYaw = pair.yaw();
-        player.rotationPitch = pair.pitch();
+        if (FindItConfig.ENABLE_ROTATE_VIEW) {
+            lookAtTarget(player, response);
+        }
     }
 
     public void handleSlotHighlight(HighlightSlotsPacket packet) {
