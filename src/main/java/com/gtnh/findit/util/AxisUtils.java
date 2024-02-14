@@ -1,11 +1,12 @@
 package com.gtnh.findit.util;
+
 import net.minecraft.util.Vec3;
 import net.minecraft.world.ChunkPosition;
-
 
 public class AxisUtils {
 
     public static final class AxisPair {
+
         private final float yaw;
         private final float pitch;
 
@@ -23,7 +24,7 @@ public class AxisUtils {
         }
     }
 
-    public static AxisPair calculateAxisPair(Vec3 player, ChunkPosition target){
+    public static AxisPair calculateAxisPair(Vec3 player, ChunkPosition target) {
         double deltaX = target.chunkPosX - player.xCoord;
         double deltaY = target.chunkPosY - player.yCoord;
         double deltaZ = target.chunkPosZ - player.zCoord;

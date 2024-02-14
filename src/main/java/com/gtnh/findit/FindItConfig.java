@@ -28,7 +28,11 @@ public class FindItConfig {
                     "20",
                     "Maximum number of positions that can be displayed by item/block search").getInt();
 
-            ENABLE_ROTATE_VIEW = config.get(Configuration.CATEGORY_GENERAL, "EnableRotateView", "false", "Rotate player's view when searched").getBoolean();
+            ENABLE_ROTATE_VIEW = config.get(
+                    Configuration.CATEGORY_GENERAL,
+                    "EnableRotateView",
+                    "false",
+                    "Rotate player's view when searched").getBoolean();
         } catch (Exception ignore) {} finally {
             if (config.hasChanged()) config.save();
         }

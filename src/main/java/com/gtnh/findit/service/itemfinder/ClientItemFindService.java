@@ -1,6 +1,10 @@
 package com.gtnh.findit.service.itemfinder;
 
-import com.gtnh.findit.FindItConfig;
+import static com.gtnh.findit.util.ClientFinderHelperUtils.lookAtTarget;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.client.gui.GuiScreen;
@@ -16,6 +20,7 @@ import net.minecraftforge.common.MinecraftForge;
 import org.lwjgl.input.Keyboard;
 
 import com.gtnh.findit.FindIt;
+import com.gtnh.findit.FindItConfig;
 import com.gtnh.findit.FindItNetwork;
 import com.gtnh.findit.fx.ParticlePosition;
 import com.gtnh.findit.fx.SlotHighlighter;
@@ -27,11 +32,6 @@ import codechicken.nei.guihook.GuiContainerManager;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.gtnh.findit.util.ClientFinderHelperUtils.lookAtTarget;
 
 public class ClientItemFindService extends ItemFindService {
 

@@ -1,6 +1,7 @@
 package com.gtnh.findit.service.blockfinder;
 
-import com.gtnh.findit.FindItConfig;
+import static com.gtnh.findit.util.ClientFinderHelperUtils.lookAtTarget;
+
 import net.minecraft.block.Block;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.init.Blocks;
@@ -9,14 +10,13 @@ import net.minecraft.item.ItemStack;
 import org.lwjgl.input.Keyboard;
 
 import com.gtnh.findit.FindIt;
+import com.gtnh.findit.FindItConfig;
 import com.gtnh.findit.FindItNetwork;
 import com.gtnh.findit.fx.ParticlePosition;
 import com.gtnh.findit.util.AbstractStackFinder;
 
 import codechicken.nei.api.API;
 import codechicken.nei.guihook.GuiContainerManager;
-
-import static com.gtnh.findit.util.ClientFinderHelperUtils.lookAtTarget;
 
 public class ClientBlockFindService extends BlockFindService {
 
