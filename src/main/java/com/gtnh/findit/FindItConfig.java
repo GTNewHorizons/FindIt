@@ -9,6 +9,7 @@ public class FindItConfig {
     public static int SEARCH_RADIUS = 16;
     public static int SEARCH_COOLDOWN = 10;
     public static int MAX_RESPONSE_SIZE = 20;
+    public static boolean ENABLE_ROTATE_VIEW = false;
 
     public static void setup(final File file) {
         final Configuration config = new Configuration(file);
@@ -26,6 +27,12 @@ public class FindItConfig {
                     "MaxResponseSize",
                     "20",
                     "Maximum number of positions that can be displayed by item/block search").getInt();
+
+            ENABLE_ROTATE_VIEW = config.get(
+                    Configuration.CATEGORY_GENERAL,
+                    "EnableRotateView",
+                    "false",
+                    "Rotate player's view when searched").getBoolean();
         } catch (Exception ignore) {} finally {
             if (config.hasChanged()) config.save();
         }

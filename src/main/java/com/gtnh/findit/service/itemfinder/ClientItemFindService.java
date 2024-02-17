@@ -1,5 +1,7 @@
 package com.gtnh.findit.service.itemfinder;
 
+import static com.gtnh.findit.util.ClientFinderHelperUtils.lookAtTarget;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +20,7 @@ import net.minecraftforge.common.MinecraftForge;
 import org.lwjgl.input.Keyboard;
 
 import com.gtnh.findit.FindIt;
+import com.gtnh.findit.FindItConfig;
 import com.gtnh.findit.FindItNetwork;
 import com.gtnh.findit.fx.ParticlePosition;
 import com.gtnh.findit.fx.SlotHighlighter;
@@ -50,6 +53,10 @@ public class ClientItemFindService extends ItemFindService {
 
         player.closeScreen();
         ParticlePosition.highlightBlocks(world, response.getPositions());
+
+        if (FindItConfig.ENABLE_ROTATE_VIEW) {
+            lookAtTarget(player, response);
+        }
     }
 
     public void handleSlotHighlight(HighlightSlotsPacket packet) {

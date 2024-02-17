@@ -1,5 +1,7 @@
 package com.gtnh.findit.service.blockfinder;
 
+import static com.gtnh.findit.util.ClientFinderHelperUtils.lookAtTarget;
+
 import net.minecraft.block.Block;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.init.Blocks;
@@ -8,6 +10,7 @@ import net.minecraft.item.ItemStack;
 import org.lwjgl.input.Keyboard;
 
 import com.gtnh.findit.FindIt;
+import com.gtnh.findit.FindItConfig;
 import com.gtnh.findit.FindItNetwork;
 import com.gtnh.findit.fx.ParticlePosition;
 import com.gtnh.findit.util.AbstractStackFinder;
@@ -25,6 +28,10 @@ public class ClientBlockFindService extends BlockFindService {
     public void handleResponse(EntityClientPlayerMP player, BlockFoundResponse response) {
         player.closeScreen();
         ParticlePosition.highlightBlocks(player.worldObj, response.getPositions());
+
+        if (FindItConfig.ENABLE_ROTATE_VIEW) {
+            lookAtTarget(player, response);
+        }
     }
 
     private static class BlockFindInputHandler extends AbstractStackFinder {
