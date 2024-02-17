@@ -1,20 +1,16 @@
 package com.gtnh.findit.service.itemfinder;
 
-import static com.gtnh.findit.util.ClientFinderHelperUtils.lookAtTarget;
-
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.multiplayer.WorldClient;
+import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
-import net.minecraftforge.client.event.GuiScreenEvent;
+import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.common.MinecraftForge;
 
 import org.lwjgl.input.Keyboard;
@@ -22,7 +18,7 @@ import org.lwjgl.input.Keyboard;
 import com.gtnh.findit.FindIt;
 import com.gtnh.findit.FindItConfig;
 import com.gtnh.findit.FindItNetwork;
-import com.gtnh.findit.fx.ParticlePosition;
+import com.gtnh.findit.fx.HighlighterHandler;
 import com.gtnh.findit.fx.SlotHighlighter;
 import com.gtnh.findit.util.AbstractStackFinder;
 
@@ -35,12 +31,18 @@ import cpw.mods.fml.common.gameevent.TickEvent;
 
 public class ClientItemFindService extends ItemFindService {
 
-    private ContainerHighlightData highlightData = null;
+    private final SlotHighlighter slotHighlighter;
+    private FindItemRequest request = null;
+    private long expirationTime = 0;
 
     public ClientItemFindService() {
         if (!FindIt.isExtraUtilitiesLoaded()) {
             API.addHashBind("gui.findit.find_item", Keyboard.KEY_T);
         }
+
+        this.slotHighlighter = new SlotHighlighter();
+
+        GuiContainerManager.addDrawHandler(this.slotHighlighter);
         GuiContainerManager.addInputHandler(new ItemFindInputHandler());
 
         MinecraftForge.EVENT_BUS.register(new GuiListener());
@@ -49,62 +51,60 @@ public class ClientItemFindService extends ItemFindService {
     }
 
     public void handleResponse(EntityClientPlayerMP player, ItemFoundResponse response) {
-        World world = player.worldObj;
-
-        player.closeScreen();
-        ParticlePosition.highlightBlocks(world, response.getPositions());
-
-        if (FindItConfig.ENABLE_ROTATE_VIEW) {
-            lookAtTarget(player, response);
-        }
-    }
-
-    public void handleSlotHighlight(HighlightSlotsPacket packet) {
-        highlightData = new ContainerHighlightData(
-                packet.getWindowId(),
-                packet.getTargetStack(),
-                packet.getTargetSlots());
+        this.slotHighlighter.highlightSlots(null, new HashSet<>(), 0xFFFF8726);
+        this.request = response.getFoundStack() != null ? new FindItemRequest(response.getFoundStack()) : null;
+        this.expirationTime = System.currentTimeMillis() + FindItConfig.ITEM_HIGHLIGHTING_DURATION * 1000;
     }
 
     public class TickListener {
 
         @SubscribeEvent
         public void onClientPostTick(TickEvent.ClientTickEvent event) {
-            if (event.phase != TickEvent.Phase.END) {
+
+            if (request == null || event.phase != TickEvent.Phase.END) {
                 return;
             }
-            WorldClient world = Minecraft.getMinecraft().theWorld;
-            if (world == null) {
+
+            if (Minecraft.getMinecraft().theWorld == null) {
                 return;
             }
-            GuiScreen screen = Minecraft.getMinecraft().currentScreen;
+
+            final GuiScreen screen = Minecraft.getMinecraft().currentScreen;
             if (!(screen instanceof GuiContainer)) {
                 return;
             }
-            GuiContainer gui = (GuiContainer) screen;
 
-            if (highlightData != null) {
-                if (highlightData.windowId == gui.inventorySlots.windowId) {
-                    highlightData.updateHighlightedSlots(gui);
-                } else {
-                    highlightData = null;
+            final GuiContainer gui = (GuiContainer) screen;
+            final HashSet<Slot> highlightedSlots = new HashSet<>();
+
+            if (System.currentTimeMillis() > expirationTime) {
+                request = null;
+            }
+
+            if (request != null) {
+                @SuppressWarnings("unchecked")
+                List<Slot> slots = gui.inventorySlots.inventorySlots;
+
+                for (Slot slot : slots) {
+                    if (!(slot.inventory instanceof InventoryPlayer) && request.equals(slot.getStack())) {
+                        highlightedSlots.add(slot);
+
+                        if (highlightedSlots.size() > 256) {
+                            break;
+                        }
+                    }
                 }
             }
+
+            slotHighlighter.highlightSlots(gui, highlightedSlots, 0xFFFF8726);
         }
     }
 
     public class GuiListener {
 
         @SubscribeEvent
-        public void onGuiPostRender(GuiScreenEvent.DrawScreenEvent.Pre event) {
-            if (!(event.gui instanceof GuiContainer)) {
-                return;
-            }
-            GuiContainer gui = (GuiContainer) event.gui;
-
-            if (highlightData != null && highlightData.windowId == gui.inventorySlots.windowId) {
-                SlotHighlighter.highlightSlots(gui, highlightData.highlightedSlots, 0xFFFF8726);
-            }
+        public void renderWorldLastEvent(RenderWorldLastEvent event) {
+            HighlighterHandler.renderHilightedBlock(event);
         }
     }
 
@@ -119,41 +119,6 @@ public class ClientItemFindService extends ItemFindService {
         protected boolean findStack(ItemStack stack) {
             FindItNetwork.CHANNEL.sendToServer(new FindItemRequest(stack));
             return true;
-        }
-    }
-
-    private static class ContainerHighlightData {
-
-        private final int windowId;
-        private final ItemStack targetStack;
-        private final List<Integer> targetSlots;
-        private final List<Integer> highlightedSlots = new ArrayList<>();
-
-        public ContainerHighlightData(int windowId, ItemStack targetStack, List<Integer> targetSlots) {
-            this.windowId = windowId;
-            this.targetStack = targetStack;
-            this.targetSlots = targetSlots;
-        }
-
-        public void updateHighlightedSlots(GuiContainer gui) {
-            highlightedSlots.clear();
-
-            @SuppressWarnings("unchecked")
-            List<Slot> slots = (List<Slot>) gui.inventorySlots.inventorySlots;
-            Item targetItem = targetStack.getItem();
-            int targetMeta = targetStack.getItemDamage();
-
-            for (int slotId : targetSlots) {
-                if (slotId >= slots.size()) {
-                    continue;
-                }
-
-                Slot slot = slots.get(slotId);
-                ItemStack stack = slot.getStack();
-                if (stack != null && stack.getItem() == targetItem && stack.getItemDamage() == targetMeta) {
-                    highlightedSlots.add(slotId);
-                }
-            }
         }
     }
 

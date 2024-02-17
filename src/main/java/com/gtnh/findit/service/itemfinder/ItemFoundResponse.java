@@ -1,10 +1,7 @@
 package com.gtnh.findit.service.itemfinder;
 
-import java.util.List;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
-import net.minecraft.world.ChunkPosition;
 
 import com.gtnh.findit.util.ProtoUtils;
 
@@ -18,11 +15,9 @@ import io.netty.buffer.ByteBuf;
 public class ItemFoundResponse implements IMessage {
 
     private ItemStack foundStack;
-    private List<ChunkPosition> positions;
 
-    public ItemFoundResponse(ItemStack foundStack, List<ChunkPosition> positions) {
+    public ItemFoundResponse(ItemStack foundStack) {
         this.foundStack = foundStack;
-        this.positions = positions;
     }
 
     public ItemFoundResponse() {}
@@ -30,31 +25,23 @@ public class ItemFoundResponse implements IMessage {
     @Override
     public void fromBytes(ByteBuf buf) {
         foundStack = ProtoUtils.readItemStack(buf);
-        positions = ProtoUtils.readPositions(buf);
     }
 
     @Override
     public void toBytes(ByteBuf buf) {
         ProtoUtils.writeItemStack(buf, foundStack);
-        ProtoUtils.writePositions(buf, positions);
     }
 
     public ItemStack getFoundStack() {
         return foundStack;
     }
 
-    public List<ChunkPosition> getPositions() {
-        return positions;
-    }
-
     public static class Handler implements IMessageHandler<ItemFoundResponse, IMessage> {
 
-        @SideOnly(Side.CLIENT)
         @Override
+        @SideOnly(Side.CLIENT)
         public IMessage onMessage(ItemFoundResponse message, MessageContext ctx) {
-            if (message.foundStack != null && !message.positions.isEmpty()) {
-                ClientItemFindService.getInstance().handleResponse(Minecraft.getMinecraft().thePlayer, message);
-            }
+            ClientItemFindService.getInstance().handleResponse(Minecraft.getMinecraft().thePlayer, message);
             return null;
         }
     }

@@ -1,6 +1,6 @@
 package com.gtnh.findit.fx;
 
-import java.util.List;
+import java.util.HashSet;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -13,55 +13,76 @@ import org.lwjgl.opengl.GL11;
 
 import com.gtnh.findit.FindIt;
 
-public class SlotHighlighter {
+import codechicken.nei.guihook.IContainerDrawHandler;
+
+public class SlotHighlighter implements IContainerDrawHandler {
 
     private static final ResourceLocation highlightTexture = new ResourceLocation(
             FindIt.MOD_ID,
             "textures/gui/slot_highlight.png");
 
-    public static void highlightSlots(GuiContainer gui, List<Integer> slots, int color) {
-        if (slots.isEmpty()) {
-            return;
-        }
+    private GuiContainer gui = null;
+    private HashSet<Slot> slots = new HashSet<>();
+    private float red = 0;
+    private float green = 0;
+    private float blue = 0;
+    private float alpha = 0;
 
-        float red = (float) (color >> 16 & 255) / 255.0F;
-        float green = (float) (color >> 8 & 255) / 255.0F;
-        float blue = (float) (color & 255) / 255.0F;
-        float alpha = (float) (color >> 24 & 255) / 255.0F;
+    public void highlightSlots(GuiContainer gui, HashSet<Slot> slots, int color) {
 
-        GL11.glPushMatrix();
-        GL11.glTranslated(gui.guiLeft, gui.guiTop, 0);
+        this.gui = gui;
+        this.slots = slots;
 
-        GL11.glDisable(GL11.GL_ALPHA_TEST);
-        GL11.glShadeModel(GL11.GL_SMOOTH);
-        GL11.glEnable(GL11.GL_BLEND);
-        OpenGlHelper.glBlendFunc(770, 771, 1, 0);
-
-        GL11.glEnable(GL11.GL_TEXTURE_2D);
-        Minecraft.getMinecraft().getTextureManager().bindTexture(highlightTexture);
-
-        Tessellator tessellator = Tessellator.instance;
-        tessellator.startDrawingQuads();
-        tessellator.setColorRGBA_F(red, green, blue, alpha);
-
-        for (int slotId : slots) {
-            Slot slot = gui.inventorySlots.getSlot(slotId);
-            highlightSlot(tessellator, slot.xDisplayPosition - 1, slot.yDisplayPosition - 1);
-        }
-
-        tessellator.draw();
-
-        GL11.glShadeModel(GL11.GL_FLAT);
-        GL11.glDisable(GL11.GL_BLEND);
-        GL11.glEnable(GL11.GL_ALPHA_TEST);
-
-        GL11.glPopMatrix();
+        this.red = (float) (color >> 16 & 255) / 255.0F;
+        this.green = (float) (color >> 8 & 255) / 255.0F;
+        this.blue = (float) (color & 255) / 255.0F;
+        this.alpha = (float) (color >> 24 & 255) / 255.0F;
     }
 
-    private static void highlightSlot(Tessellator tessellator, int x, int y) {
+    @Override
+    public void onPreDraw(GuiContainer gui) {}
+
+    @Override
+    public void renderObjects(GuiContainer gui, int mousex, int mousey) {}
+
+    @Override
+    public void postRenderObjects(GuiContainer gui, int mousex, int mousey) {}
+
+    @Override
+    public void renderSlotOverlay(GuiContainer gui, Slot slot) {}
+
+    @Override
+    public void renderSlotUnderlay(GuiContainer gui, Slot slot) {
+
+        if (this.gui == gui && this.slots.contains(slot)) {
+            GL11.glPushMatrix();
+
+            GL11.glDisable(GL11.GL_ALPHA_TEST);
+            GL11.glShadeModel(GL11.GL_SMOOTH);
+            GL11.glEnable(GL11.GL_BLEND);
+            OpenGlHelper.glBlendFunc(770, 771, 1, 0);
+
+            GL11.glEnable(GL11.GL_TEXTURE_2D);
+            Minecraft.getMinecraft().getTextureManager().bindTexture(highlightTexture);
+
+            Tessellator tessellator = Tessellator.instance;
+            tessellator.startDrawingQuads();
+            tessellator.setColorRGBA_F(red, green, blue, alpha);
+            highlightSlot(tessellator, slot.xDisplayPosition, slot.yDisplayPosition);
+            tessellator.draw();
+
+            GL11.glShadeModel(GL11.GL_FLAT);
+            GL11.glDisable(GL11.GL_BLEND);
+            GL11.glEnable(GL11.GL_ALPHA_TEST);
+
+            GL11.glPopMatrix();
+        }
+    }
+
+    private void highlightSlot(Tessellator tessellator, int x, int y) {
         double zLevel = 1;
-        int x2 = x + 18;
-        int y2 = y + 18;
+        int x2 = x + 16;
+        int y2 = y + 16;
 
         tessellator.addVertexWithUV(x2, y, zLevel, 18 / 32.0, 0);
         tessellator.addVertexWithUV(x, y, zLevel, 0, 0);

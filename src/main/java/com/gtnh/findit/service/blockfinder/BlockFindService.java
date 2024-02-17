@@ -32,6 +32,7 @@ public class BlockFindService {
         for (TileEntity tileEntity : WorldUtils.getTileEntitiesAround(player, FindItConfig.SEARCH_RADIUS)) {
             try {
                 Block tileBlock = tileEntity.getBlockType();
+
                 if (!request.getBlockToFind().equals(tileBlock)) {
                     continue;
                 }
@@ -54,8 +55,6 @@ public class BlockFindService {
             }
         }
 
-        if (!positions.isEmpty()) {
-            FindItNetwork.CHANNEL.sendTo(new BlockFoundResponse(positions), player);
-        }
+        FindItNetwork.CHANNEL.sendTo(new BlockFoundResponse(positions), player);
     }
 }

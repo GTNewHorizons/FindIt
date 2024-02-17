@@ -7,13 +7,8 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.ChunkPosition;
 
 import com.gtnh.findit.service.blockfinder.BlockFoundResponse;
-import com.gtnh.findit.service.itemfinder.ItemFoundResponse;
 
 public class ClientFinderHelperUtils {
-
-    public static void lookAtTarget(EntityClientPlayerMP player, ItemFoundResponse response) {
-        rotateViewHelper(player, response.getPositions());
-    }
 
     public static void lookAtTarget(EntityClientPlayerMP player, BlockFoundResponse response) {
         rotateViewHelper(player, response.getPositions());
