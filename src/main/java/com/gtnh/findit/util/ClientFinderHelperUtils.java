@@ -16,7 +16,7 @@ public class ClientFinderHelperUtils {
 
     public static void rotateViewHelper(EntityClientPlayerMP player, List<ChunkPosition> targets) {
         Vec3 playerVec = player.getPosition(1.0F);
-        Vec3 first = center(targets.remove(0));
+        Vec3 first = center(targets.get(0));
 
         AxisUtils.AxisPair pair = AxisUtils.calculateAxisPair(playerVec, first);
 
