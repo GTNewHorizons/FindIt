@@ -1,7 +1,6 @@
 package com.gtnh.findit.util;
 
 import net.minecraft.util.Vec3;
-import net.minecraft.world.ChunkPosition;
 
 public class AxisUtils {
 
@@ -24,10 +23,10 @@ public class AxisUtils {
         }
     }
 
-    public static AxisPair calculateAxisPair(Vec3 player, ChunkPosition target) {
-        double deltaX = target.chunkPosX - player.xCoord;
-        double deltaY = target.chunkPosY - player.yCoord;
-        double deltaZ = target.chunkPosZ - player.zCoord;
+    public static AxisPair calculateAxisPair(Vec3 player, Vec3 target) {
+        double deltaX = target.xCoord - player.xCoord;
+        double deltaY = target.yCoord - player.yCoord;
+        double deltaZ = target.zCoord - player.zCoord;
 
         double distanceXZ = Math.sqrt(deltaX * deltaX + deltaZ * deltaZ);
 
