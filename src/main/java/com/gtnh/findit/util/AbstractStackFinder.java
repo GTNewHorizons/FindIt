@@ -3,7 +3,6 @@ package com.gtnh.findit.util;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.item.ItemStack;
 
-import codechicken.nei.LayoutManager;
 import codechicken.nei.NEIClientConfig;
 import codechicken.nei.guihook.GuiContainerManager;
 import codechicken.nei.guihook.IContainerInputHandler;
@@ -28,15 +27,11 @@ public abstract class AbstractStackFinder implements IContainerInputHandler {
             return false;
         }
 
-        LayoutManager layout = LayoutManager.instance();
-        if (layout == null || LayoutManager.itemPanel == null || NEIClientConfig.isHidden()) {
-            return false;
-        }
-
         ItemStack stack = GuiContainerManager.getStackMouseOver(guiContainer);
         if (stack == null || stack.getItem() == null) {
             return false;
         }
+
         return findStack(stack);
     }
 

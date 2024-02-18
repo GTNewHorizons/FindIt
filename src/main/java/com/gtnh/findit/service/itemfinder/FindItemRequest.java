@@ -1,11 +1,13 @@
 package com.gtnh.findit.service.itemfinder;
 
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.FluidStack;
 
 import com.gtnh.findit.FindIt;
 import com.gtnh.findit.service.blockfinder.BlockFoundResponse;
 import com.gtnh.findit.util.ProtoUtils;
 
+import codechicken.nei.recipe.StackInfo;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
@@ -13,33 +15,62 @@ import io.netty.buffer.ByteBuf;
 
 public class FindItemRequest implements IMessage {
 
-    private ItemStack stack;
+    private ItemStack targetStack;
+    private FluidStack targetFluidStack;
 
-    public FindItemRequest(ItemStack stack) {
-        this.stack = stack;
+    public FindItemRequest(ItemStack targetStack) {
+        this.targetStack = targetStack;
+        this.targetFluidStack = StackInfo.getFluid(targetStack);
     }
 
     public FindItemRequest() {}
 
     @Override
     public void fromBytes(ByteBuf buf) {
-        stack = ProtoUtils.readItemStack(buf);
+        targetStack = ProtoUtils.readItemStack(buf);
+        targetFluidStack = StackInfo.getFluid(targetStack);
     }
 
     @Override
     public void toBytes(ByteBuf buf) {
-        ProtoUtils.writeItemStack(buf, stack);
+        ProtoUtils.writeItemStack(buf, targetStack);
     }
 
     public ItemStack getStackToFind() {
-        return stack;
+        return targetStack;
+    }
+
+    public boolean hasFluidStack() {
+        return targetFluidStack != null;
+    }
+
+    public boolean equals(FluidStack fluid) {
+
+        if (fluid != null && targetFluidStack != null) {
+            return targetFluidStack.isFluidEqual(fluid);
+        }
+
+        return false;
+    }
+
+    public boolean equals(ItemStack stack) {
+
+        if (stack == null) {
+            return false;
+        }
+
+        if (targetFluidStack != null) {
+            return targetFluidStack.isFluidEqual(StackInfo.getFluid(stack));
+        }
+
+        return StackInfo.equalItemAndNBT(targetStack, stack, true);
     }
 
     public static class Handler implements IMessageHandler<FindItemRequest, BlockFoundResponse> {
 
         @Override
         public BlockFoundResponse onMessage(FindItemRequest message, MessageContext ctx) {
-            if (message.stack != null) {
+            if (message.targetStack != null) {
                 FindIt.getItemFindService().handleRequest(ctx.getServerHandler().playerEntity, message);
             }
             return null;
