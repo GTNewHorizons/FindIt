@@ -16,7 +16,7 @@ public class ClientFinderHelperUtils {
 
     public static void rotateViewHelper(EntityClientPlayerMP player, List<ChunkPosition> targets) {
         Vec3 playerVec = player.getPosition(1.0F);
-        Vec3 first = center(targets.get(0));
+        Vec3 first = center(getNearBlock(playerVec, targets));
 
         AxisUtils.AxisPair pair = AxisUtils.calculateAxisPair(playerVec, first);
 
@@ -26,5 +26,28 @@ public class ClientFinderHelperUtils {
 
     public static Vec3 center(ChunkPosition p) {
         return Vec3.createVectorHelper(p.chunkPosX + 0.5, p.chunkPosY + 0.5, p.chunkPosZ + 0.5);
+    }
+
+    private static ChunkPosition getNearBlock(Vec3 player, List<ChunkPosition> targets) {
+        ChunkPosition result = null;
+        double minDistance = Double.MAX_VALUE;
+
+        for (ChunkPosition target : targets) {
+            double distance = getDistance(player, target);
+            if (distance < minDistance) {
+                result = target;
+                minDistance = distance;
+            }
+        }
+
+        return result;
+    }
+
+    private static double getDistance(Vec3 player, ChunkPosition target) {
+        double deltaX = target.chunkPosX - player.xCoord;
+        double deltaY = target.chunkPosY - player.yCoord;
+        double deltaZ = target.chunkPosZ - player.zCoord;
+
+        return Math.sqrt(deltaX * deltaX + deltaZ * deltaZ + deltaY * deltaY);
     }
 }
