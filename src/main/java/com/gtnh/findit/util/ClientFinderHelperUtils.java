@@ -3,6 +3,7 @@ package com.gtnh.findit.util;
 import java.util.List;
 
 import net.minecraft.client.entity.EntityClientPlayerMP;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.ChunkPosition;
 
@@ -15,13 +16,15 @@ public class ClientFinderHelperUtils {
     }
 
     public static void rotateViewHelper(EntityClientPlayerMP player, List<ChunkPosition> targets) {
-        Vec3 playerVec = player.getPosition(1.0F);
-        Vec3 first = center(getNearBlock(playerVec, targets));
+        if (targets.isEmpty()) {
+            return;
+        }
 
-        AxisUtils.AxisPair pair = AxisUtils.calculateAxisPair(playerVec, first);
+        Vec3 eyesPos = player.getPosition(1.0F);
+        Vec3 nearestPos = center(getNearBlock(eyesPos, targets));
 
-        player.rotationYaw = pair.yaw();
-        player.rotationPitch = pair.pitch();
+        Rotation targetRotation = Rotation.lookAt(eyesPos, nearestPos);
+        targetRotation.apply(player);
     }
 
     public static Vec3 center(ChunkPosition p) {
@@ -33,7 +36,7 @@ public class ClientFinderHelperUtils {
         double minDistance = Double.MAX_VALUE;
 
         for (ChunkPosition target : targets) {
-            double distance = getDistance(player, target);
+            double distance = getDistanceToCenter(player, target);
             if (distance < minDistance) {
                 result = target;
                 minDistance = distance;
@@ -43,11 +46,21 @@ public class ClientFinderHelperUtils {
         return result;
     }
 
-    private static double getDistance(Vec3 player, ChunkPosition target) {
-        double deltaX = target.chunkPosX - player.xCoord;
-        double deltaY = target.chunkPosY - player.yCoord;
-        double deltaZ = target.chunkPosZ - player.zCoord;
+    private static double getDistanceToCenter(Vec3 player, ChunkPosition target) {
+        double deltaX = target.chunkPosX + 0.5 - player.xCoord;
+        double deltaY = target.chunkPosY + 0.5 - player.yCoord;
+        double deltaZ = target.chunkPosZ + 0.5 - player.zCoord;
 
         return Math.sqrt(deltaX * deltaX + deltaZ * deltaZ + deltaY * deltaY);
+    }
+
+    public static AxisAlignedBB mergeAABB(AxisAlignedBB box1, AxisAlignedBB box2) {
+        return AxisAlignedBB.getBoundingBox(
+                Math.min(box1.minX, box2.minX),
+                Math.min(box1.minY, box2.minY),
+                Math.min(box1.minZ, box2.minZ),
+                Math.max(box1.maxX, box2.maxX),
+                Math.max(box1.maxY, box2.maxY),
+                Math.max(box1.maxZ, box2.maxZ));
     }
 }

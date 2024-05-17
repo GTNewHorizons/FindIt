@@ -6,24 +6,33 @@ import net.minecraft.block.Block;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.client.event.RenderWorldLastEvent;
+import net.minecraftforge.common.MinecraftForge;
 
 import org.lwjgl.input.Keyboard;
 
 import com.gtnh.findit.FindIt;
 import com.gtnh.findit.FindItConfig;
 import com.gtnh.findit.FindItNetwork;
-import com.gtnh.findit.fx.HighlighterHandler;
+import com.gtnh.findit.fx.BlockHighlighter;
 import com.gtnh.findit.fx.ParticlePosition;
 import com.gtnh.findit.util.AbstractStackFinder;
 
 import codechicken.nei.api.API;
 import codechicken.nei.guihook.GuiContainerManager;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class ClientBlockFindService extends BlockFindService {
 
+    private final BlockHighlighter blockHighlighter;
+
     public ClientBlockFindService() {
+        this.blockHighlighter = new BlockHighlighter();
+
         API.addHashBind("gui.findit.find_block", Keyboard.KEY_Y);
         GuiContainerManager.addInputHandler(new BlockFindInputHandler());
+
+        MinecraftForge.EVENT_BUS.register(new WorldRenderListener());
     }
 
     public void handleResponse(EntityClientPlayerMP player, BlockFoundResponse response) {
@@ -39,9 +48,17 @@ public class ClientBlockFindService extends BlockFindService {
         if (FindItConfig.USE_PARTICLE_HIGHLIGHTER) {
             ParticlePosition.highlightBlocks(player.worldObj, response.getPositions());
         } else {
-            HighlighterHandler.highlightBlocks(
+            this.blockHighlighter.highlightBlocks(
                     response.getPositions(),
-                    System.currentTimeMillis() + FindItConfig.BLOCK_HIGHLIGHTING_DURATION * 1000);
+                    System.currentTimeMillis() + FindItConfig.BLOCK_HIGHLIGHTING_DURATION * 1000L);
+        }
+    }
+
+    public class WorldRenderListener {
+
+        @SubscribeEvent
+        public void renderWorldLastEvent(RenderWorldLastEvent event) {
+            blockHighlighter.renderHighlightedBlock(event);
         }
     }
 

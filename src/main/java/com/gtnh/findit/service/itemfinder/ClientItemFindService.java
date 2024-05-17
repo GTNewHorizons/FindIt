@@ -1,5 +1,6 @@
 package com.gtnh.findit.service.itemfinder;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
@@ -7,9 +8,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.common.MinecraftForge;
 
@@ -18,7 +21,7 @@ import org.lwjgl.input.Keyboard;
 import com.gtnh.findit.FindIt;
 import com.gtnh.findit.FindItConfig;
 import com.gtnh.findit.FindItNetwork;
-import com.gtnh.findit.fx.HighlighterHandler;
+import com.gtnh.findit.fx.EntityHighlighter;
 import com.gtnh.findit.fx.SlotHighlighter;
 import com.gtnh.findit.util.AbstractStackFinder;
 
@@ -32,7 +35,9 @@ import cpw.mods.fml.common.gameevent.TickEvent;
 public class ClientItemFindService extends ItemFindService {
 
     private final SlotHighlighter slotHighlighter;
-    private FindItemRequest request = null;
+    private final EntityHighlighter itemEntitiesHighlighter;
+
+    private FindItemRequest foundItem = null;
     private long expirationTime = 0;
 
     public ClientItemFindService() {
@@ -41,19 +46,44 @@ public class ClientItemFindService extends ItemFindService {
         }
 
         this.slotHighlighter = new SlotHighlighter();
+        this.itemEntitiesHighlighter = new EntityHighlighter();
 
         GuiContainerManager.addDrawHandler(this.slotHighlighter);
         GuiContainerManager.addInputHandler(new ItemFindInputHandler());
 
-        MinecraftForge.EVENT_BUS.register(new GuiListener());
         MinecraftForge.EVENT_BUS.register(new NEIEventListener());
+        MinecraftForge.EVENT_BUS.register(new WorldRenderListener());
         FMLCommonHandler.instance().bus().register(new TickListener());
     }
 
     public void handleResponse(EntityClientPlayerMP player, ItemFoundResponse response) {
         this.slotHighlighter.highlightSlots(null, new HashSet<>(), 0xFFFF8726);
-        this.request = response.getFoundStack() != null ? new FindItemRequest(response.getFoundStack()) : null;
-        this.expirationTime = System.currentTimeMillis() + FindItConfig.ITEM_HIGHLIGHTING_DURATION * 1000;
+        this.foundItem = response.getFoundStack() != null ? new FindItemRequest(response.getFoundStack()) : null;
+        this.expirationTime = System.currentTimeMillis() + FindItConfig.ITEM_HIGHLIGHTING_DURATION * 1000L;
+
+        if (foundItem == null || !FindItConfig.SEARCH_ITEMS_ON_GROUND) {
+            return;
+        }
+
+        int searchRadius = FindItConfig.SEARCH_RADIUS;
+        AxisAlignedBB searchBox = AxisAlignedBB
+                .getBoundingBox(player.posX, player.posY, player.posZ, player.posX, player.posY, player.posZ)
+                .expand(searchRadius, searchRadius, searchRadius);
+
+        @SuppressWarnings("unchecked")
+        List<EntityItem> itemEntities = player.worldObj.getEntitiesWithinAABB(EntityItem.class, searchBox);
+        List<Integer> foundItemEntities = new ArrayList<>();
+
+        for (EntityItem itemEntity : itemEntities) {
+            if (foundItem.isStackSatisfies(itemEntity.getEntityItem())) {
+                foundItemEntities.add(itemEntity.getEntityId());
+                if (foundItemEntities.size() >= FindItConfig.MAX_RESPONSE_SIZE) {
+                    break;
+                }
+            }
+        }
+
+        this.itemEntitiesHighlighter.highlightEntities(foundItemEntities, expirationTime);
     }
 
     public class TickListener {
@@ -61,7 +91,7 @@ public class ClientItemFindService extends ItemFindService {
         @SubscribeEvent
         public void onClientPostTick(TickEvent.ClientTickEvent event) {
 
-            if (request == null || event.phase != TickEvent.Phase.END) {
+            if (foundItem == null || event.phase != TickEvent.Phase.END) {
                 return;
             }
 
@@ -78,15 +108,15 @@ public class ClientItemFindService extends ItemFindService {
             final HashSet<Slot> highlightedSlots = new HashSet<>();
 
             if (System.currentTimeMillis() > expirationTime) {
-                request = null;
+                foundItem = null;
             }
 
-            if (request != null) {
+            if (foundItem != null) {
                 @SuppressWarnings("unchecked")
                 List<Slot> slots = gui.inventorySlots.inventorySlots;
 
                 for (Slot slot : slots) {
-                    if (!(slot.inventory instanceof InventoryPlayer) && request.equals(slot.getStack())) {
+                    if (!(slot.inventory instanceof InventoryPlayer) && foundItem.isStackSatisfies(slot.getStack())) {
                         highlightedSlots.add(slot);
 
                         if (highlightedSlots.size() > 256) {
@@ -100,11 +130,11 @@ public class ClientItemFindService extends ItemFindService {
         }
     }
 
-    public class GuiListener {
+    public class WorldRenderListener {
 
         @SubscribeEvent
         public void renderWorldLastEvent(RenderWorldLastEvent event) {
-            HighlighterHandler.renderHilightedBlock(event);
+            itemEntitiesHighlighter.renderHighlightedEntities(event);
         }
     }
 

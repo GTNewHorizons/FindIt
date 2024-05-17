@@ -41,25 +41,22 @@ public class FindItemRequest implements IMessage {
     }
 
     public boolean hasFluidStack() {
-        return targetFluidStack != null;
+        return targetFluidStack != null && targetFluidStack.amount > 0;
     }
 
-    public boolean equals(FluidStack fluid) {
-
+    public boolean isFluidSatisfies(FluidStack fluid) {
         if (fluid != null && targetFluidStack != null) {
             return targetFluidStack.isFluidEqual(fluid);
         }
-
         return false;
     }
 
-    public boolean equals(ItemStack stack) {
-
+    public boolean isStackSatisfies(ItemStack stack) {
         if (stack == null) {
             return false;
         }
 
-        if (targetFluidStack != null) {
+        if (hasFluidStack()) {
             return targetFluidStack.isFluidEqual(StackInfo.getFluid(stack));
         }
 

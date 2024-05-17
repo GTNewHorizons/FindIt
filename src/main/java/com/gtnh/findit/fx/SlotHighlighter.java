@@ -53,10 +53,10 @@ public class SlotHighlighter implements IContainerDrawHandler {
 
     @Override
     public void renderSlotUnderlay(GuiContainer gui, Slot slot) {
-
         if (this.gui == gui && this.slots.contains(slot)) {
             GL11.glPushMatrix();
 
+            GL11.glDisable(GL11.GL_LIGHTING);
             GL11.glDisable(GL11.GL_ALPHA_TEST);
             GL11.glShadeModel(GL11.GL_SMOOTH);
             GL11.glEnable(GL11.GL_BLEND);
@@ -74,6 +74,7 @@ public class SlotHighlighter implements IContainerDrawHandler {
             GL11.glShadeModel(GL11.GL_FLAT);
             GL11.glDisable(GL11.GL_BLEND);
             GL11.glEnable(GL11.GL_ALPHA_TEST);
+            GL11.glEnable(GL11.GL_LIGHTING);
 
             GL11.glPopMatrix();
         }
