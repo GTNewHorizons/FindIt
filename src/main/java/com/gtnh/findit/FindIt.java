@@ -30,6 +30,7 @@ public class FindIt {
 
     private boolean extraUtilitiesLoaded;
     private boolean gregTechloaded;
+    private boolean enderIOloaded;
 
     private SearchCooldownService cooldownService;
     private BlockFindService blockFindService;
@@ -39,6 +40,8 @@ public class FindIt {
     public void preInit(FMLPreInitializationEvent event) {
         this.extraUtilitiesLoaded = Loader.isModLoaded("ExtraUtilities");
         this.gregTechloaded = Loader.isModLoaded("gregtech");
+        this.enderIOloaded = Loader.isModLoaded("EnderIO");
+
         FindItConfig.setup(event.getSuggestedConfigurationFile());
         boolean isClient = event.getSide() == Side.CLIENT;
 
@@ -65,5 +68,9 @@ public class FindIt {
 
     public static boolean isGregTechLoaded() {
         return INSTANCE.gregTechloaded;
+    }
+
+    public static boolean isEnderIOLoaded() {
+        return INSTANCE.enderIOloaded;
     }
 }

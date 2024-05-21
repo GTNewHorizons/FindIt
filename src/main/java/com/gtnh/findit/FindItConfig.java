@@ -13,6 +13,7 @@ public class FindItConfig {
     public static boolean USE_PARTICLE_HIGHLIGHTER = false;
     public static boolean SEARCH_ITEMS_ON_GROUND = true;
     public static boolean SEARCH_IN_GT_PIPES = false;
+    public static boolean SEARCH_IN_ENDERIO_CONDUITS = false;
     public static int ITEM_HIGHLIGHTING_DURATION = 10;
     public static int BLOCK_HIGHLIGHTING_DURATION = 8;
 
@@ -44,6 +45,12 @@ public class FindItConfig {
                     "SearchInGregTechPipes",
                     "false",
                     "Search items & fluids in GT pipes").getBoolean();
+
+            SEARCH_IN_ENDERIO_CONDUITS = config.get(
+                    Configuration.CATEGORY_GENERAL,
+                    "SearchInEnderIOConduits",
+                    "false",
+                    "Search items & fluids in EnderIO conduits").getBoolean();
 
             SEARCH_ITEMS_ON_GROUND = config.get(
                     Configuration.CATEGORY_GENERAL,

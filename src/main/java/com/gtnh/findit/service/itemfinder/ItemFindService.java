@@ -19,6 +19,7 @@ import com.gtnh.findit.service.blockfinder.BlockFoundResponse;
 import com.gtnh.findit.util.WorldUtils;
 
 import cpw.mods.fml.relauncher.Side;
+import crazypants.enderio.conduit.TileConduitBundle;
 import gregtech.api.metatileentity.BaseMetaPipeEntity;
 
 public class ItemFindService {
@@ -55,6 +56,11 @@ public class ItemFindService {
     private boolean findItemInTile(TileEntity tileEntity, FindItemRequest request) {
         if (FindIt.isGregTechLoaded()) {
             if (!FindItConfig.SEARCH_IN_GT_PIPES && tileEntity instanceof BaseMetaPipeEntity) {
+                return false;
+            }
+        }
+        if (FindIt.isEnderIOLoaded()) {
+            if (!FindItConfig.SEARCH_IN_ENDERIO_CONDUITS && tileEntity instanceof TileConduitBundle) {
                 return false;
             }
         }
