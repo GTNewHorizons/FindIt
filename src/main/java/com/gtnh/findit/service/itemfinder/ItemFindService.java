@@ -10,6 +10,7 @@ import net.minecraft.world.ChunkPosition;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.fluids.IFluidTank;
 
 import com.gtnh.findit.FindIt;
 import com.gtnh.findit.FindItConfig;
@@ -18,6 +19,8 @@ import com.gtnh.findit.service.blockfinder.BlockFoundResponse;
 import com.gtnh.findit.util.WorldUtils;
 
 import cpw.mods.fml.relauncher.Side;
+import crazypants.enderio.conduit.TileConduitBundle;
+import gregtech.api.metatileentity.BaseMetaPipeEntity;
 
 public class ItemFindService {
 
@@ -27,7 +30,6 @@ public class ItemFindService {
     }
 
     public void handleRequest(EntityPlayerMP player, FindItemRequest request) {
-
         if (FindIt.getCooldownService().checkSearchCooldown(player)) {
             return;
         }
@@ -36,7 +38,7 @@ public class ItemFindService {
 
         for (TileEntity tileEntity : WorldUtils.getTileEntitiesAround(player, FindItConfig.SEARCH_RADIUS)) {
             try {
-                if (tileEntity instanceof IInventory && findItemInInventory((IInventory) tileEntity, request)) {
+                if (findItemInTile(tileEntity, request)) {
                     positions.add(new ChunkPosition(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord));
                     if (positions.size() == FindItConfig.MAX_RESPONSE_SIZE) {
                         break;
@@ -51,21 +53,40 @@ public class ItemFindService {
         FindItNetwork.CHANNEL.sendTo(new ItemFoundResponse(request.getStackToFind()), player);
     }
 
-    private boolean findItemInInventory(IInventory inventory, FindItemRequest request) {
+    private boolean findItemInTile(TileEntity tileEntity, FindItemRequest request) {
+        if (FindIt.isGregTechLoaded()) {
+            if (!FindItConfig.SEARCH_IN_GT_PIPES && tileEntity instanceof BaseMetaPipeEntity) {
+                return false;
+            }
+        }
+        if (FindIt.isEnderIOLoaded()) {
+            if (!FindItConfig.SEARCH_IN_ENDERIO_CONDUITS && tileEntity instanceof TileConduitBundle) {
+                return false;
+            }
+        }
 
-        if (request.hasFluidStack() && inventory instanceof IFluidHandler) {
-            FluidTankInfo[] tankInfo = ((IFluidHandler) inventory).getTankInfo(ForgeDirection.UNKNOWN);
+        if (request.hasFluidStack()) {
+            if (tileEntity instanceof IFluidTank && request.isFluidSatisfies(((IFluidTank) tileEntity).getFluid())) {
+                return true;
+            }
 
-            for (FluidTankInfo info : tankInfo) {
-                if (request.equals(info.fluid)) {
-                    return true;
+            if (tileEntity instanceof IFluidHandler) {
+                FluidTankInfo[] tankInfo = ((IFluidHandler) tileEntity).getTankInfo(ForgeDirection.UNKNOWN);
+
+                for (FluidTankInfo info : tankInfo) {
+                    if (request.isFluidSatisfies(info.fluid)) {
+                        return true;
+                    }
                 }
             }
         }
 
-        for (int slot = 0; slot < inventory.getSizeInventory(); slot++) {
-            if (request.equals(inventory.getStackInSlot(slot))) {
-                return true;
+        if (tileEntity instanceof IInventory) {
+            IInventory inventory = (IInventory) tileEntity;
+            for (int slot = 0; slot < inventory.getSizeInventory(); slot++) {
+                if (request.isStackSatisfies(inventory.getStackInSlot(slot))) {
+                    return true;
+                }
             }
         }
 
