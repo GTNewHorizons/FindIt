@@ -41,7 +41,7 @@ public class FindItemRequest implements IMessage {
     }
 
     public boolean hasFluidStack() {
-        return targetFluidStack != null && targetFluidStack.amount > 0;
+        return targetFluidStack != null;
     }
 
     public boolean isFluidSatisfies(FluidStack fluid) {
