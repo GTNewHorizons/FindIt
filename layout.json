@@ -1,0 +1,13 @@
+{
+  "ideaDirPath": "/mnt/games/Minecraft/Repos/GTNewHorizons/FindIt/.idea",
+  "modulesMap": {
+    "FindIt": "/mnt/games/Minecraft/Repos/GTNewHorizons/FindIt/.idea/modules/FindIt.iml",
+    "FindIt:mcLauncher": "/mnt/games/Minecraft/Repos/GTNewHorizons/FindIt/.idea/modules/FindIt.mcLauncher.iml",
+    "FindIt:patchedMc": "/mnt/games/Minecraft/Repos/GTNewHorizons/FindIt/.idea/modules/FindIt.patchedMc.iml",
+    "FindIt:test": "/mnt/games/Minecraft/Repos/GTNewHorizons/FindIt/.idea/modules/FindIt.test.iml",
+    "FindIt:injectedTags": "/mnt/games/Minecraft/Repos/GTNewHorizons/FindIt/.idea/modules/FindIt.injectedTags.iml",
+    "FindIt:main": "/mnt/games/Minecraft/Repos/GTNewHorizons/FindIt/.idea/modules/FindIt.main.iml",
+    "FindIt:api": "/mnt/games/Minecraft/Repos/GTNewHorizons/FindIt/.idea/modules/FindIt.api.iml",
+    "FindIt:ideVirtualMain": "/mnt/games/Minecraft/Repos/GTNewHorizons/FindIt/.idea/modules/FindIt.ideVirtualMain.iml"
+  }
+}
