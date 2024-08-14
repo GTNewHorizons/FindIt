@@ -66,7 +66,7 @@ public class ItemFindService {
             }
         }
 
-        if (FindIt.isDraconicEvolutionLoader()) {
+        if (FindIt.isDraconicEvolutionLoaded()) {
             if (tileEntity instanceof TilePlacedItem placedItem && request.isStackSatisfies(placedItem.getStack())) {
                 return true;
             }

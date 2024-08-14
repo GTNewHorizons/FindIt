@@ -77,7 +77,7 @@ public class FindIt {
         return INSTANCE.enderIOloaded;
     }
 
-    public static boolean isDraconicEvolutionLoader() {
+    public static boolean isDraconicEvolutionLoaded() {
         return INSTANCE.draconicEvolutionLoaded;
     }
 }
