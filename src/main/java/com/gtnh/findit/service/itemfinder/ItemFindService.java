@@ -12,6 +12,7 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 import net.minecraftforge.fluids.IFluidTank;
 
+import com.brandon3055.draconicevolution.common.tileentities.TilePlacedItem;
 import com.gtnh.findit.FindIt;
 import com.gtnh.findit.FindItConfig;
 import com.gtnh.findit.FindItNetwork;
@@ -62,6 +63,12 @@ public class ItemFindService {
         if (FindIt.isEnderIOLoaded()) {
             if (!FindItConfig.SEARCH_IN_ENDERIO_CONDUITS && tileEntity instanceof TileConduitBundle) {
                 return false;
+            }
+        }
+
+        if (FindIt.isDraconicEvolutionLoaded()) {
+            if (tileEntity instanceof TilePlacedItem placedItem && request.isStackSatisfies(placedItem.getStack())) {
+                return true;
             }
         }
 

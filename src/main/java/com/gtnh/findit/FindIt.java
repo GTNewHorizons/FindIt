@@ -32,6 +32,8 @@ public class FindIt {
     private boolean gregTechloaded;
     private boolean enderIOloaded;
 
+    private boolean draconicEvolutionLoaded;
+
     private SearchCooldownService cooldownService;
     private BlockFindService blockFindService;
     private ItemFindService itemFindService;
@@ -41,6 +43,7 @@ public class FindIt {
         this.extraUtilitiesLoaded = Loader.isModLoaded("ExtraUtilities");
         this.gregTechloaded = Loader.isModLoaded("gregtech");
         this.enderIOloaded = Loader.isModLoaded("EnderIO");
+        this.draconicEvolutionLoaded = Loader.isModLoaded("DraconicEvolution");
 
         FindItConfig.setup(event.getSuggestedConfigurationFile());
         boolean isClient = event.getSide() == Side.CLIENT;
@@ -72,5 +75,9 @@ public class FindIt {
 
     public static boolean isEnderIOLoaded() {
         return INSTANCE.enderIOloaded;
+    }
+
+    public static boolean isDraconicEvolutionLoaded() {
+        return INSTANCE.draconicEvolutionLoaded;
     }
 }
