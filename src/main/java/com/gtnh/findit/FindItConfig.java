@@ -16,6 +16,7 @@ public class FindItConfig {
     public static boolean SEARCH_IN_ENDERIO_CONDUITS = false;
     public static int ITEM_HIGHLIGHTING_DURATION = 10;
     public static int BLOCK_HIGHLIGHTING_DURATION = 8;
+    public static int ITEM_HIGHLIGHTING_COLOR = 0xFFFF8726;
 
     public static void setup(final File file) {
         final Configuration config = new Configuration(file);
@@ -73,6 +74,14 @@ public class FindItConfig {
                     "EnableRotateView",
                     "false",
                     "Rotate player's view when searched").getBoolean();
+
+            ITEM_HIGHLIGHTING_COLOR = Integer.parseUnsignedInt(
+                    config.get(
+                            Configuration.CATEGORY_GENERAL,
+                            "ItemHighlightingColor",
+                            "FFFF8726",
+                            "Item highlighting color as a hexadecimal color code. For example 0xFFFF8726").getString(),
+                    16);
         } catch (Exception ignore) {} finally {
             if (config.hasChanged()) config.save();
         }
