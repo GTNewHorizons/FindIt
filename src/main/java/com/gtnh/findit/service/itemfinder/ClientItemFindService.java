@@ -126,7 +126,7 @@ public class ClientItemFindService extends ItemFindService {
                 }
             }
 
-            slotHighlighter.highlightSlots(gui, highlightedSlots, 0xFFFF8726);
+            slotHighlighter.highlightSlots(gui, highlightedSlots, FindItConfig.ITEM_HIGHLIGHTING_COLOR);
         }
     }
 
