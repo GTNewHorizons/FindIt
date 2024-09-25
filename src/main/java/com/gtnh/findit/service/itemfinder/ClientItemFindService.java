@@ -95,10 +95,14 @@ public class ClientItemFindService extends ItemFindService {
                 return;
             }
 
+            // `WorldClient` is only available on the client-side, thus effectively checking if the game is running on
+            // the client. We are only interested in highlighting slots when the player is in a GUI; the operation is
+            // bound client-side.
             if (Minecraft.getMinecraft().theWorld == null) {
                 return;
             }
 
+            // We are only interested in GUIs that contain some kind of inventory.
             final GuiScreen screen = Minecraft.getMinecraft().currentScreen;
             if (!(screen instanceof GuiContainer)) {
                 return;
@@ -107,21 +111,26 @@ public class ClientItemFindService extends ItemFindService {
             final GuiContainer gui = (GuiContainer) screen;
             final HashSet<Slot> highlightedSlots = new HashSet<>();
 
+            // If the expiration time has passed, we reset the found item. This is done to prevent the item from being
+            // highlighted indefinitely.
             if (System.currentTimeMillis() > expirationTime) {
                 foundItem = null;
             }
+            if (foundItem == null) {
+                return;
+            }
 
-            if (foundItem != null) {
-                @SuppressWarnings("unchecked")
-                List<Slot> slots = gui.inventorySlots.inventorySlots;
+            // We continue to iterate over each slot of the given GUI's inventory and checking if the slot contains the
+            // item that we are looking for.
+            @SuppressWarnings("unchecked")
+            List<Slot> slots = gui.inventorySlots.inventorySlots;
 
-                for (Slot slot : slots) {
-                    if (!(slot.inventory instanceof InventoryPlayer) && foundItem.isStackSatisfies(slot.getStack())) {
-                        highlightedSlots.add(slot);
+            for (Slot slot : slots) {
+                if (!(slot.inventory instanceof InventoryPlayer) && foundItem.isStackSatisfies(slot.getStack())) {
+                    highlightedSlots.add(slot);
 
-                        if (highlightedSlots.size() > 256) {
-                            break;
-                        }
+                    if (highlightedSlots.size() > 256) {
+                        break;
                     }
                 }
             }
@@ -152,6 +161,10 @@ public class ClientItemFindService extends ItemFindService {
         }
     }
 
+    /**
+     * This class is responsible for removing the NEI ping handler from the list of input handlers. This is done to
+     * prevent the NEI ping handler from interfering with the FindIt keybind.
+     */
     public static class NEIEventListener {
 
         @SubscribeEvent
@@ -164,6 +177,9 @@ public class ClientItemFindService extends ItemFindService {
         }
     }
 
+    /**
+     * Returns the instance of the client item find service.
+     */
     public static ClientItemFindService getInstance() {
         return (ClientItemFindService) FindIt.getItemFindService();
     }

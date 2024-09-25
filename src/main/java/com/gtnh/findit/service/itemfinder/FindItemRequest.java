@@ -1,11 +1,14 @@
 package com.gtnh.findit.service.itemfinder;
 
+import java.util.Optional;
+
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
 import com.gtnh.findit.FindIt;
 import com.gtnh.findit.service.blockfinder.BlockFoundResponse;
 import com.gtnh.findit.util.ProtoUtils;
+import com.gtnh.findit.util.mods.ForestryUtils;
 
 import codechicken.nei.recipe.StackInfo;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
@@ -58,6 +61,25 @@ public class FindItemRequest implements IMessage {
 
         if (hasFluidStack()) {
             return targetFluidStack.isFluidEqual(StackInfo.getFluid(stack));
+        }
+
+        // Additionally check for backpacks that might contain the item itself.
+        if (FindIt.isForestryLoaded()) {
+            Optional<Boolean> result = ForestryUtils.getInventoryOfPotentialStorageItem(stack).map(inventory -> {
+                for (int i = 0; i < inventory.getSizeInventory(); i++) {
+                    // This does a recursive call, but backpacks cannot store other backpacks, so we won't run into
+                    // StackOverflowExceptions.
+                    if (inventory.getStackInSlot(i) != null && isStackSatisfies(inventory.getStackInSlot(i))) {
+                        return true;
+                    }
+                }
+
+                // None of the inventory slots contained the item we were looking for.
+                return false;
+            });
+            if (result.isPresent()) {
+                return result.get();
+            }
         }
 
         return StackInfo.equalItemAndNBT(targetStack, stack, true);
