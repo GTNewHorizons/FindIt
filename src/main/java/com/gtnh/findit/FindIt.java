@@ -28,11 +28,11 @@ public class FindIt {
     @Mod.Instance(MOD_ID)
     public static FindIt INSTANCE;
 
-    private boolean extraUtilitiesLoaded;
-    private boolean gregTechloaded;
-    private boolean enderIOloaded;
-
-    private boolean draconicEvolutionLoaded;
+    private boolean isDraconicEvolutionLoaded;
+    private boolean isEnderIOLoaded;
+    private boolean isExtraUtilitiesLoaded;
+    private boolean isForestryLoaded;
+    private boolean isGregTechLoaded;
 
     private SearchCooldownService cooldownService;
     private BlockFindService blockFindService;
@@ -40,10 +40,11 @@ public class FindIt {
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
-        this.extraUtilitiesLoaded = Loader.isModLoaded("ExtraUtilities");
-        this.gregTechloaded = Loader.isModLoaded("gregtech");
-        this.enderIOloaded = Loader.isModLoaded("EnderIO");
-        this.draconicEvolutionLoaded = Loader.isModLoaded("DraconicEvolution");
+        this.isExtraUtilitiesLoaded = Loader.isModLoaded("ExtraUtilities");
+        this.isGregTechLoaded = Loader.isModLoaded("gregtech");
+        this.isEnderIOLoaded = Loader.isModLoaded("EnderIO");
+        this.isDraconicEvolutionLoaded = Loader.isModLoaded("DraconicEvolution");
+        this.isForestryLoaded = Loader.isModLoaded("Forestry");
 
         FindItConfig.setup(event.getSuggestedConfigurationFile());
         boolean isClient = event.getSide() == Side.CLIENT;
@@ -66,18 +67,22 @@ public class FindIt {
     }
 
     public static boolean isExtraUtilitiesLoaded() {
-        return INSTANCE.extraUtilitiesLoaded;
+        return INSTANCE.isExtraUtilitiesLoaded;
     }
 
     public static boolean isGregTechLoaded() {
-        return INSTANCE.gregTechloaded;
+        return INSTANCE.isGregTechLoaded;
     }
 
     public static boolean isEnderIOLoaded() {
-        return INSTANCE.enderIOloaded;
+        return INSTANCE.isEnderIOLoaded;
     }
 
     public static boolean isDraconicEvolutionLoaded() {
-        return INSTANCE.draconicEvolutionLoaded;
+        return INSTANCE.isDraconicEvolutionLoaded;
+    }
+
+    public static boolean isForestryLoaded() {
+        return INSTANCE.isForestryLoaded;
     }
 }

@@ -5,4 +5,5 @@ dependencies {
     compileOnly('com.github.GTNewHorizons:GT5-Unofficial:5.09.49.05:dev')
     compileOnly('com.github.GTNewHorizons:EnderIO:2.8.17:dev')
     compileOnly('com.github.GTNewHorizons:Draconic-Evolution:1.3.6-GTNH:dev')
+    api('com.github.GTNewHorizons:ForestryMC:4.9.16:dev')
 }
