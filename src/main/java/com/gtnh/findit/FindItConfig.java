@@ -17,7 +17,7 @@ public class FindItConfig {
     public static int ITEM_HIGHLIGHTING_DURATION = 10;
     public static int BLOCK_HIGHLIGHTING_DURATION = 8;
     public static int ITEM_HIGHLIGHTING_COLOR = 0xFFFF8726;
-    public static boolean ITEM_HIGHLIGHT_EMPTY_ITEMSTACKS = false;
+    public static boolean ITEM_HIGHLIGHTING_EMPTY_ITEMSTACKS = false;
 
     public static void setup(final File file) {
         final Configuration config = new Configuration(file);
@@ -84,9 +84,9 @@ public class FindItConfig {
                             "Item highlighting color as a hexadecimal color code. For example 0xFFFF8726").getString(),
                     16);
 
-            ITEM_HIGHLIGHT_EMPTY_ITEMSTACKS = config.get(
+            ITEM_HIGHLIGHTING_EMPTY_ITEMSTACKS = config.get(
                     Configuration.CATEGORY_GENERAL,
-                    "ItemHighlightEmptyItemStacks",
+                    "ItemHighlightingEmptyItemStacks",
                     "false",
                     "If true, the item stack size is ignored. If false, items are only highlighted if their stack size is greater than one.\n"
                             + "This is useful when working with barrels or storage drawers.")

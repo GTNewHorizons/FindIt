@@ -96,7 +96,7 @@ public class FindItemRequest implements IMessage {
      */
     private boolean shouldHighlightItemStack(ItemStack itemStack) {
         // If the user requested to highlight empty item stacks, we early return to make sure that we do so.
-        if (FindItConfig.ITEM_HIGHLIGHT_EMPTY_ITEMSTACKS) {
+        if (FindItConfig.ITEM_HIGHLIGHTING_EMPTY_ITEMSTACKS) {
             return true;
         }
 
