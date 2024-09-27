@@ -88,7 +88,7 @@ public class FindItConfig {
                     Configuration.CATEGORY_GENERAL,
                     "ItemHighlightingEmptyItemStacks",
                     "false",
-                    "If true, the item stack size is ignored. If false, items are only highlighted if their stack size is greater than one.\n"
+                    "If true, the item stack size is ignored. If false, items are only highlighted if their stack size is greater than zero.\n"
                             + "This is useful when working with barrels or storage drawers.")
                     .getBoolean();
         } catch (Exception ignore) {} finally {

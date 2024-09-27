@@ -8,6 +8,6 @@ dependencies {
     api('com.github.GTNewHorizons:ForestryMC:4.9.16:dev')
 
     // For testing in dev environment.
-    devOnlyNonPublishable('com.github.GTNewHorizons:StorageDrawers:1.13.5-GTNH')
-    devOnlyNonPublishable("com.github.GTNewHorizons:waila:1.8.1")
+    //runtimeOnlyNonPublishable('com.github.GTNewHorizons:StorageDrawers:1.13.5-GTNH')
+    //runtimeOnlyNonPublishable("com.github.GTNewHorizons:waila:1.8.1")
 }
