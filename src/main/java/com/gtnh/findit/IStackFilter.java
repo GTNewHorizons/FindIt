@@ -11,15 +11,16 @@ import net.minecraftforge.fluids.FluidStack;
 
 import com.gtnh.findit.service.itemfinder.FindItemRequest;
 
+@FunctionalInterface
 public interface IStackFilter {
 
-    public boolean matches(FindItemRequest request);
+    boolean matches(FindItemRequest request);
 
     public static interface IStackFilterProvider {
 
-        public IStackFilter getFilter(EntityPlayer player, TileEntity tileEntity);
+        IStackFilter getFilter(EntityPlayer player, TileEntity tileEntity);
 
-        public IStackFilter getFilter(EntityPlayer player, ItemStack stack);
+        IStackFilter getFilter(EntityPlayer player, ItemStack stack);
 
     }
 
