@@ -10,14 +10,10 @@ import net.minecraft.world.ChunkPosition;
 import com.gtnh.findit.FindIt;
 import com.gtnh.findit.FindItConfig;
 import com.gtnh.findit.FindItNetwork;
-import com.gtnh.findit.IStackFilter;
-import com.gtnh.findit.IStackFilter.IStackFilterProvider;
 import com.gtnh.findit.service.blockfinder.BlockFoundResponse;
 import com.gtnh.findit.util.WorldUtils;
 
 import cpw.mods.fml.relauncher.Side;
-import crazypants.enderio.conduit.TileConduitBundle;
-import gregtech.api.metatileentity.BaseMetaPipeEntity;
 
 public class ItemFindService {
 
@@ -35,7 +31,7 @@ public class ItemFindService {
 
         for (TileEntity tileEntity : WorldUtils.getTileEntitiesAround(player, FindItConfig.SEARCH_RADIUS)) {
             try {
-                if (findItemInTile(player, tileEntity, request)) {
+                if (request.isTileSatisfies(player, tileEntity)) {
                     positions.add(new ChunkPosition(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord));
                     if (positions.size() == FindItConfig.MAX_RESPONSE_SIZE) {
                         break;
@@ -48,25 +44,5 @@ public class ItemFindService {
 
         FindItNetwork.CHANNEL.sendTo(new BlockFoundResponse(positions), player);
         FindItNetwork.CHANNEL.sendTo(new ItemFoundResponse(request.getStackToFind()), player);
-    }
-
-    private boolean findItemInTile(EntityPlayerMP player, TileEntity tileEntity, FindItemRequest request) {
-        if (FindIt.isGregTechLoaded() && !FindItConfig.SEARCH_IN_GT_PIPES && tileEntity instanceof BaseMetaPipeEntity) {
-            return false;
-        }
-
-        if (FindIt.isEnderIOLoaded() && !FindItConfig.SEARCH_IN_ENDERIO_CONDUITS
-                && tileEntity instanceof TileConduitBundle) {
-            return false;
-        }
-
-        for (IStackFilterProvider provider : FindIt.INSTANCE.pluginsList) {
-            IStackFilter filter = provider.getFilter(player, tileEntity);
-            if (filter != null && filter.matches(request)) {
-                return true;
-            }
-        }
-
-        return false;
     }
 }
