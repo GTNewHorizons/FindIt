@@ -6,6 +6,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
 import com.gtnh.findit.FindIt;
+import com.gtnh.findit.FindItConfig;
 import com.gtnh.findit.service.blockfinder.BlockFoundResponse;
 import com.gtnh.findit.util.ProtoUtils;
 import com.gtnh.findit.util.mods.ForestryUtils;
@@ -82,7 +83,24 @@ public class FindItemRequest implements IMessage {
             }
         }
 
-        return StackInfo.equalItemAndNBT(targetStack, stack, true);
+        return StackInfo.equalItemAndNBT(targetStack, stack, true) && shouldHighlightItemStack(stack);
+    }
+
+    /**
+     * Returns whether an {@code ItemStack} should be highlighted inside inventories. The method explicitly checks for
+     * empty item stacks and consults the mod's configuration to determine whether empty item stacks should be
+     * highlighted or not.
+     *
+     * @param itemStack The {@code ItemStack} to check.
+     * @return {@code true} if the {@code ItemStack} should be highlighted, {@code false} otherwise.
+     */
+    private boolean shouldHighlightItemStack(ItemStack itemStack) {
+        // If the user requested to highlight empty item stacks, we early return to make sure that we do so.
+        if (FindItConfig.ITEM_HIGHLIGHTING_EMPTY_ITEMSTACKS) {
+            return true;
+        }
+
+        return itemStack.stackSize > 0;
     }
 
     public static class Handler implements IMessageHandler<FindItemRequest, BlockFoundResponse> {
