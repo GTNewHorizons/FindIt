@@ -1,5 +1,15 @@
 package com.gtnh.findit;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.gtnh.findit.IStackFilter.IStackFilterProvider;
+import com.gtnh.findit.handler.AdventureBackpackProvider;
+import com.gtnh.findit.handler.BackpackProvider;
+import com.gtnh.findit.handler.DraconicEvolutionProvider;
+import com.gtnh.findit.handler.ForestryStackFilterProvider;
+import com.gtnh.findit.handler.MinecraftProvider;
+import com.gtnh.findit.handler.ProjectRedExplorationProvider;
 import com.gtnh.findit.service.blockfinder.BlockFindService;
 import com.gtnh.findit.service.blockfinder.ClientBlockFindService;
 import com.gtnh.findit.service.cooldown.SearchCooldownService;
@@ -28,30 +38,54 @@ public class FindIt {
     @Mod.Instance(MOD_ID)
     public static FindIt INSTANCE;
 
-    private boolean isDraconicEvolutionLoaded;
     private boolean isEnderIOLoaded;
     private boolean isExtraUtilitiesLoaded;
-    private boolean isForestryLoaded;
     private boolean isGregTechLoaded;
 
     private SearchCooldownService cooldownService;
     private BlockFindService blockFindService;
     private ItemFindService itemFindService;
 
+    public final List<IStackFilterProvider> pluginsList = new ArrayList<>();
+
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         this.isExtraUtilitiesLoaded = Loader.isModLoaded("ExtraUtilities");
         this.isGregTechLoaded = Loader.isModLoaded("gregtech");
         this.isEnderIOLoaded = Loader.isModLoaded("EnderIO");
-        this.isDraconicEvolutionLoaded = Loader.isModLoaded("DraconicEvolution");
-        this.isForestryLoaded = Loader.isModLoaded("Forestry");
+        this.cooldownService = new SearchCooldownService();
 
         FindItConfig.setup(event.getSuggestedConfigurationFile());
-        boolean isClient = event.getSide() == Side.CLIENT;
 
-        this.cooldownService = new SearchCooldownService();
-        this.blockFindService = isClient ? new ClientBlockFindService() : new BlockFindService();
-        this.itemFindService = isClient ? new ClientItemFindService() : new ItemFindService();
+        if (event.getSide() == Side.CLIENT) {
+            this.blockFindService = new ClientBlockFindService();
+            this.itemFindService = new ClientItemFindService();
+        } else {
+            this.blockFindService = new BlockFindService();
+            this.itemFindService = new ItemFindService();
+        }
+
+        if (Loader.isModLoaded("Forestry")) {
+            this.pluginsList.add(new ForestryStackFilterProvider());
+        }
+
+        if (Loader.isModLoaded("adventurebackpack")) {
+            this.pluginsList.add(new AdventureBackpackProvider());
+        }
+
+        if (Loader.isModLoaded("ProjRed|Exploration")) {
+            this.pluginsList.add(new ProjectRedExplorationProvider());
+        }
+
+        if (Loader.isModLoaded("DraconicEvolution")) {
+            this.pluginsList.add(new DraconicEvolutionProvider());
+        }
+
+        if (Loader.isModLoaded("Backpack")) {
+            this.pluginsList.add(new BackpackProvider());
+        }
+
+        this.pluginsList.add(new MinecraftProvider());
     }
 
     public static SearchCooldownService getCooldownService() {
@@ -78,11 +112,4 @@ public class FindIt {
         return INSTANCE.isEnderIOLoaded;
     }
 
-    public static boolean isDraconicEvolutionLoaded() {
-        return INSTANCE.isDraconicEvolutionLoaded;
-    }
-
-    public static boolean isForestryLoaded() {
-        return INSTANCE.isForestryLoaded;
-    }
 }
