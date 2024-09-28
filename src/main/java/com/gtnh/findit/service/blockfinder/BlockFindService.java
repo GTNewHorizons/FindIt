@@ -38,8 +38,8 @@ public class BlockFindService {
                 }
 
                 int tileMeta;
-                if (FindIt.isGregTechLoaded() && tileEntity instanceof IGregTechTileEntity) {
-                    tileMeta = ((IGregTechTileEntity) tileEntity).getMetaTileID();
+                if (FindIt.isGregTechLoaded() && tileEntity instanceof IGregTechTileEntity gregTech) {
+                    tileMeta = gregTech.getMetaTileID();
                 } else {
                     tileMeta = tileEntity.getBlockMetadata();
                 }

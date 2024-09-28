@@ -9,6 +9,7 @@ import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -75,7 +76,7 @@ public class ClientItemFindService extends ItemFindService {
         List<Integer> foundItemEntities = new ArrayList<>();
 
         for (EntityItem itemEntity : itemEntities) {
-            if (foundItem.isStackSatisfies(itemEntity.getEntityItem())) {
+            if (foundItem.isStackSatisfies(player, itemEntity.getEntityItem())) {
                 foundItemEntities.add(itemEntity.getEntityId());
                 if (foundItemEntities.size() >= FindItConfig.MAX_RESPONSE_SIZE) {
                     break;
@@ -124,9 +125,11 @@ public class ClientItemFindService extends ItemFindService {
             // item that we are looking for.
             @SuppressWarnings("unchecked")
             List<Slot> slots = gui.inventorySlots.inventorySlots;
+            EntityPlayer player = Minecraft.getMinecraft().thePlayer;
 
             for (Slot slot : slots) {
-                if (!(slot.inventory instanceof InventoryPlayer) && foundItem.isStackSatisfies(slot.getStack())) {
+                if (!(slot.inventory instanceof InventoryPlayer)
+                        && foundItem.isStackSatisfies(player, slot.getStack())) {
                     highlightedSlots.add(slot);
 
                     if (highlightedSlots.size() > 256) {

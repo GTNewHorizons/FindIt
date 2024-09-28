@@ -1,15 +1,15 @@
 package com.gtnh.findit.service.itemfinder;
 
-import java.util.Optional;
-
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
 import com.gtnh.findit.FindIt;
 import com.gtnh.findit.FindItConfig;
+import com.gtnh.findit.IStackFilter;
+import com.gtnh.findit.IStackFilter.IStackFilterProvider;
 import com.gtnh.findit.service.blockfinder.BlockFoundResponse;
 import com.gtnh.findit.util.ProtoUtils;
-import com.gtnh.findit.util.mods.ForestryUtils;
 
 import codechicken.nei.recipe.StackInfo;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
@@ -44,63 +44,23 @@ public class FindItemRequest implements IMessage {
         return targetStack;
     }
 
-    public boolean hasFluidStack() {
-        return targetFluidStack != null;
-    }
-
     public boolean isFluidSatisfies(FluidStack fluid) {
-        if (fluid != null && targetFluidStack != null) {
-            return targetFluidStack.isFluidEqual(fluid);
-        }
-        return false;
+        if (fluid == null || !FindItConfig.ITEM_HIGHLIGHTING_EMPTY_ITEMSTACKS && fluid.amount == 0) return false;
+
+        return targetFluidStack != null && targetFluidStack.isFluidEqual(fluid);
     }
 
-    public boolean isStackSatisfies(ItemStack stack) {
-        if (stack == null) {
-            return false;
-        }
+    public boolean isStackSatisfies(EntityPlayer player, ItemStack stack) {
+        if (stack == null || !FindItConfig.ITEM_HIGHLIGHTING_EMPTY_ITEMSTACKS && stack.stackSize == 0) return false;
 
-        if (hasFluidStack()) {
-            return targetFluidStack.isFluidEqual(StackInfo.getFluid(stack));
-        }
-
-        // Additionally check for backpacks that might contain the item itself.
-        if (FindIt.isForestryLoaded()) {
-            Optional<Boolean> result = ForestryUtils.getInventoryOfPotentialStorageItem(stack).map(inventory -> {
-                for (int i = 0; i < inventory.getSizeInventory(); i++) {
-                    // This does a recursive call, but backpacks cannot store other backpacks, so we won't run into
-                    // StackOverflowExceptions.
-                    if (inventory.getStackInSlot(i) != null && isStackSatisfies(inventory.getStackInSlot(i))) {
-                        return true;
-                    }
-                }
-
-                // None of the inventory slots contained the item we were looking for.
-                return false;
-            });
-            if (result.isPresent()) {
-                return result.get();
+        for (IStackFilterProvider provider : FindIt.INSTANCE.pluginsList) {
+            IStackFilter filter = provider.getFilter(player, stack);
+            if (filter != null && filter.matches(this)) {
+                return true;
             }
         }
 
-        return StackInfo.equalItemAndNBT(targetStack, stack, true) && shouldHighlightItemStack(stack);
-    }
-
-    /**
-     * Returns whether an {@code ItemStack} should be highlighted inside inventories. The method explicitly checks for
-     * empty item stacks and consults the mod's configuration to determine whether empty item stacks should be
-     * highlighted or not.
-     *
-     * @param itemStack The {@code ItemStack} to check.
-     * @return {@code true} if the {@code ItemStack} should be highlighted, {@code false} otherwise.
-     */
-    private boolean shouldHighlightItemStack(ItemStack itemStack) {
-        // If the user requested to highlight empty item stacks, we early return to make sure that we do so.
-        if (FindItConfig.ITEM_HIGHLIGHTING_EMPTY_ITEMSTACKS) {
-            return true;
-        }
-
-        return itemStack.stackSize > 0;
+        return false;
     }
 
     public static class Handler implements IMessageHandler<FindItemRequest, BlockFoundResponse> {
