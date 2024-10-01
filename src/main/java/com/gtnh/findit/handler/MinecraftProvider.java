@@ -35,12 +35,12 @@ public class MinecraftProvider implements IStackFilterProvider {
         if (tileEntity instanceof IFluidHandler handler) {
             FluidTankInfo[] tankInfo = handler.getTankInfo(ForgeDirection.UNKNOWN);
             FluidStackFilter filter = new FluidStackFilter();
-
-            for (FluidTankInfo info : tankInfo) {
-                filter.add(info.fluid);
+            if (tankInfo != null) {
+                for (FluidTankInfo info : tankInfo) {
+                    filter.add(info.fluid);
+                }
             }
-
-            anyFilter.add(filter);
+            if (!filter.isEmpty()) anyFilter.add(filter);
         }
 
         return anyFilter.isEmpty() ? null : anyFilter;
