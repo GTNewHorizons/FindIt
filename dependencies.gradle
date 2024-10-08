@@ -10,9 +10,14 @@ dependencies {
     compileOnly('com.github.GTNewHorizons:AdventureBackpack2:1.2.2-GTNH:dev')
     compileOnly("com.github.GTNewHorizons:ProjectRed:4.10.5-GTNH:dev")
     compileOnly("com.github.GTNewHorizons:Minecraft-Backpack-Mod:2.4.3-GTNH:dev")
+    compileOnly("curse.maven:thaumcraft-nei-plugin-225095:2241913")
+    compileOnly("thaumcraft:Thaumcraft:1.7.10-4.2.3.5:dev")
 
     // For testing in dev environment.
     // runtimeOnlyNonPublishable('com.github.GTNewHorizons:StorageDrawers:1.13.5-GTNH')
     // runtimeOnlyNonPublishable("com.github.GTNewHorizons:waila:1.8.1")
+    // runtimeOnlyNonPublishable('thaumcraft:Thaumcraft:1.7.10-4.2.3.5:dev')
+    // runtimeOnlyNonPublishable("com.github.GTNewHorizons:Baubles:1.0.4:dev")
+    // runtimeOnlyNonPublishable('curse.maven:thaumcraft-nei-plugin-225095:2241913')
 
 }
