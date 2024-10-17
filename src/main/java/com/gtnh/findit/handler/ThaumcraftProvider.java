@@ -1,6 +1,7 @@
 package com.gtnh.findit.handler;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 
@@ -18,22 +19,24 @@ public class ThaumcraftProvider implements IStackFilterProvider {
 
     static class AspectStackFilter implements IStackFilter {
 
-        AspectList aspects;
+        AspectList filterAspects;
 
-        AspectStackFilter(AspectList aspects) {
-            this.aspects = aspects;
+        AspectStackFilter(AspectList filterAspects) {
+            this.filterAspects = filterAspects;
         }
 
         @Override
         public boolean matches(FindItemRequest request) {
             ItemStack stack = request.getStackToFind();
-            if (!(stack.getItem() instanceof ItemAspect)) return false;
+            Item item = stack.getItem();
+            if (!(item instanceof ItemAspect || item instanceof IEssentiaContainerItem)) return false;
 
-            // An ItemAspect from ThaumcraftNeiPlugin never has multiple aspects.
-            Aspect stackAspect = ItemAspect.getAspects(stack).getAspects()[0];
-            if (stackAspect == null) return false;
+            AspectList stackAspects = ItemAspect.getAspects(stack);
+            if (stackAspects.size() != 1) return false;
 
-            return aspects.getAmount(stackAspect) > 0;
+            Aspect stackAspect = stackAspects.getAspects()[0];
+
+            return filterAspects.getAmount(stackAspect) > 0;
         }
     }
 
