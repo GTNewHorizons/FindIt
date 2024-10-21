@@ -10,6 +10,7 @@ import com.gtnh.findit.handler.DraconicEvolutionProvider;
 import com.gtnh.findit.handler.ForestryStackFilterProvider;
 import com.gtnh.findit.handler.MinecraftProvider;
 import com.gtnh.findit.handler.ProjectRedExplorationProvider;
+import com.gtnh.findit.handler.ThaumcraftProvider;
 import com.gtnh.findit.service.blockfinder.BlockFindService;
 import com.gtnh.findit.service.blockfinder.ClientBlockFindService;
 import com.gtnh.findit.service.cooldown.SearchCooldownService;
@@ -83,6 +84,10 @@ public class FindIt {
 
         if (Loader.isModLoaded("Backpack")) {
             this.pluginsList.add(new BackpackProvider());
+        }
+
+        if (Loader.isModLoaded("thaumcraftneiplugin") && Loader.isModLoaded("Thaumcraft")) {
+            this.pluginsList.add(new ThaumcraftProvider());
         }
 
         this.pluginsList.add(new MinecraftProvider());
