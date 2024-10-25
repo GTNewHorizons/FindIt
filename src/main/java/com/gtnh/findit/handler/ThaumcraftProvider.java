@@ -43,12 +43,16 @@ public class ThaumcraftProvider implements IStackFilterProvider {
     @Override
     public IStackFilter getFilter(EntityPlayer player, TileEntity tileEntity) {
         if (!(tileEntity instanceof IAspectContainer aspectContainer)) return null;
-        return new AspectStackFilter(aspectContainer.getAspects());
+        AspectList aspects = aspectContainer.getAspects();
+        if (aspects == null) return null;
+        return new AspectStackFilter(aspects);
     }
 
     @Override
     public IStackFilter getFilter(EntityPlayer player, ItemStack stack) {
         if (!(stack.getItem() instanceof IEssentiaContainerItem containerItem)) return null;
-        return new AspectStackFilter(containerItem.getAspects(stack));
+        AspectList aspects = containerItem.getAspects(stack);
+        if (aspects == null) return null;
+        return new AspectStackFilter(aspects);
     }
 }
