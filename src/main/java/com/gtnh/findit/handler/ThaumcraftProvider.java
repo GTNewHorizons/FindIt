@@ -32,7 +32,7 @@ public class ThaumcraftProvider implements IStackFilterProvider {
             if (!(item instanceof ItemAspect || item instanceof IEssentiaContainerItem)) return false;
 
             AspectList stackAspects = ItemAspect.getAspects(stack);
-            if (stackAspects.size() != 1) return false;
+            if (stackAspects == null || stackAspects.size() != 1) return false;
 
             Aspect stackAspect = stackAspects.getAspects()[0];
 
