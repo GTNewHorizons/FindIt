@@ -52,7 +52,7 @@ public class FindIt {
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         this.isExtraUtilitiesLoaded = Loader.isModLoaded("ExtraUtilities");
-        this.isGregTechLoaded = Loader.isModLoaded("gregtech");
+        this.isGregTechLoaded = Loader.isModLoaded("gregtech") && !Loader.isModLoaded("gregtech_nh");
         this.isEnderIOLoaded = Loader.isModLoaded("EnderIO");
         this.cooldownService = new SearchCooldownService();
 
