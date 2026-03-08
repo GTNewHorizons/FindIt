@@ -5,7 +5,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 
-import com.djgiannuzz.thaumcraftneiplugin.items.ItemAspect;
 import com.gtnh.findit.IStackFilter;
 import com.gtnh.findit.IStackFilter.IStackFilterProvider;
 import com.gtnh.findit.service.itemfinder.FindItemRequest;
@@ -29,14 +28,24 @@ public class ThaumcraftProvider implements IStackFilterProvider {
         public boolean matches(FindItemRequest request) {
             ItemStack stack = request.getStackToFind();
             Item item = stack.getItem();
-            if (!(item instanceof ItemAspect || item instanceof IEssentiaContainerItem)) return false;
+            Aspect aspect;
+            if (item instanceof IEssentiaContainerItem container) {
+                AspectList stackAspects = container.getAspects(stack);
+                if (stackAspects == null || stackAspects.aspects.isEmpty()) return false;
 
-            AspectList stackAspects = ItemAspect.getAspects(stack);
-            if (stackAspects == null || stackAspects.size() != 1) return false;
+                aspect = stackAspects.getAspects()[0];
+            } else if (item instanceof com.gtnewhorizons.aspectrecipeindex.common.items.ItemAspect) {
+                aspect = com.gtnewhorizons.aspectrecipeindex.common.items.ItemAspect.getAspect(stack);
+            } else if (item instanceof com.djgiannuzz.thaumcraftneiplugin.items.ItemAspect) {
+                AspectList stackAspects = com.djgiannuzz.thaumcraftneiplugin.items.ItemAspect.getAspects(stack);
+                if (stackAspects == null || stackAspects.aspects.isEmpty()) return false;
 
-            Aspect stackAspect = stackAspects.getAspects()[0];
+                aspect = stackAspects.getAspects()[0];
+            } else {
+                return false;
+            }
 
-            return filterAspects.getAmount(stackAspect) > 0;
+            return filterAspects.getAmount(aspect) > 0;
         }
     }
 

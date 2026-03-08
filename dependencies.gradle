@@ -12,12 +12,14 @@ dependencies {
     compileOnly("com.github.GTNewHorizons:Minecraft-Backpack-Mod:2.6.9-GTNH:dev")
     compileOnly("curse.maven:thaumcraft-nei-plugin-225095:2241913")
     compileOnly("thaumcraft:Thaumcraft:1.7.10-4.2.3.5:dev")
+    compileOnly("com.github.GTNewHorizons:AspectRecipeIndex:1.0.0:dev")
 
     // For testing in dev environment.
     // runtimeOnlyNonPublishable('com.github.GTNewHorizons:StorageDrawers:2.2.16-GTNH')
     // runtimeOnlyNonPublishable("com.github.GTNewHorizons:waila:1.19.22")
-    // runtimeOnlyNonPublishable('thaumcraft:Thaumcraft:1.7.10-4.2.3.5:dev')
-    // runtimeOnlyNonPublishable("com.github.GTNewHorizons:Baubles:1.0.4:dev")
-    // runtimeOnlyNonPublishable('curse.maven:thaumcraft-nei-plugin-225095:2241913')
+     runtimeOnlyNonPublishable('thaumcraft:Thaumcraft:1.7.10-4.2.3.5:dev')
+     runtimeOnlyNonPublishable("com.github.GTNewHorizons:Baubles-Expanded:2.2.9-GTNH:dev")
+     runtimeOnlyNonPublishable(rfg.deobf('curse.maven:thaumcraft-nei-plugin-225095:2241913'))
+    runtimeOnlyNonPublishable("com.github.GTNewHorizons:AspectRecipeIndex:1.0.0:dev")
 
 }
