@@ -5,16 +5,21 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 
+import com.gtnewhorizons.aspectrecipeindex.common.items.ItemAspect;
 import com.gtnh.findit.IStackFilter;
 import com.gtnh.findit.IStackFilter.IStackFilterProvider;
 import com.gtnh.findit.service.itemfinder.FindItemRequest;
 
+import cpw.mods.fml.common.Loader;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.aspects.IAspectContainer;
 import thaumcraft.api.aspects.IEssentiaContainerItem;
 
 public class ThaumcraftProvider implements IStackFilterProvider {
+
+    public static final boolean ASPECTRECIPEINDEX = Loader.isModLoaded("aspectrecipeindex");
+    public static final boolean TCNEIPLUGIN = Loader.isModLoaded("thaumcraftneiplugin");
 
     static class AspectStackFilter implements IStackFilter {
 
@@ -34,9 +39,9 @@ public class ThaumcraftProvider implements IStackFilterProvider {
                 if (stackAspects == null || stackAspects.aspects.isEmpty()) return false;
 
                 aspect = stackAspects.getAspects()[0];
-            } else if (item instanceof com.gtnewhorizons.aspectrecipeindex.common.items.ItemAspect) {
-                aspect = com.gtnewhorizons.aspectrecipeindex.common.items.ItemAspect.getAspect(stack);
-            } else if (item instanceof com.djgiannuzz.thaumcraftneiplugin.items.ItemAspect) {
+            } else if (ASPECTRECIPEINDEX && item instanceof ItemAspect) {
+                aspect = ItemAspect.getAspect(stack);
+            } else if (TCNEIPLUGIN && item instanceof com.djgiannuzz.thaumcraftneiplugin.items.ItemAspect) {
                 AspectList stackAspects = com.djgiannuzz.thaumcraftneiplugin.items.ItemAspect.getAspects(stack);
                 if (stackAspects == null || stackAspects.aspects.isEmpty()) return false;
 
