@@ -33,18 +33,20 @@ public class ThaumcraftProvider implements IStackFilterProvider {
         public boolean matches(FindItemRequest request) {
             ItemStack stack = request.getStackToFind();
             Item item = stack.getItem();
-            Aspect aspect;
             if (item instanceof IEssentiaContainerItem container) {
                 AspectList stackAspects = container.getAspects(stack);
                 if (stackAspects == null || stackAspects.aspects.isEmpty()) return false;
-
-                aspect = stackAspects.getAspects()[0];
-            } else if (ASPECTRECIPEINDEX && item instanceof ItemAspect) {
+                for (Aspect a : stackAspects.getAspects()) {
+                    if (filterAspects.getAmount(a) > 0) return true;
+                }
+                return false;
+            }
+            Aspect aspect;
+            if (ASPECTRECIPEINDEX && item instanceof ItemAspect) {
                 aspect = ItemAspect.getAspect(stack);
             } else if (TCNEIPLUGIN && item instanceof com.djgiannuzz.thaumcraftneiplugin.items.ItemAspect) {
                 AspectList stackAspects = com.djgiannuzz.thaumcraftneiplugin.items.ItemAspect.getAspects(stack);
                 if (stackAspects == null || stackAspects.aspects.isEmpty()) return false;
-
                 aspect = stackAspects.getAspects()[0];
             } else {
                 return false;
