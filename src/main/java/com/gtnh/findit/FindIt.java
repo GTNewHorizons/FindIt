@@ -86,7 +86,7 @@ public class FindIt {
             this.pluginsList.add(new BackpackProvider());
         }
 
-        if (Loader.isModLoaded("thaumcraftneiplugin") && Loader.isModLoaded("Thaumcraft")) {
+        if (Loader.isModLoaded("Thaumcraft")) {
             this.pluginsList.add(new ThaumcraftProvider());
         }
 

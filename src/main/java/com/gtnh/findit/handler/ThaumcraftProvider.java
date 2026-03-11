@@ -5,17 +5,21 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 
-import com.djgiannuzz.thaumcraftneiplugin.items.ItemAspect;
+import com.gtnewhorizons.aspectrecipeindex.common.items.ItemAspect;
 import com.gtnh.findit.IStackFilter;
 import com.gtnh.findit.IStackFilter.IStackFilterProvider;
 import com.gtnh.findit.service.itemfinder.FindItemRequest;
 
+import cpw.mods.fml.common.Loader;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.aspects.IAspectContainer;
 import thaumcraft.api.aspects.IEssentiaContainerItem;
 
 public class ThaumcraftProvider implements IStackFilterProvider {
+
+    public static final boolean ASPECTRECIPEINDEX = Loader.isModLoaded("aspectrecipeindex");
+    public static final boolean TCNEIPLUGIN = Loader.isModLoaded("thaumcraftneiplugin");
 
     static class AspectStackFilter implements IStackFilter {
 
@@ -29,14 +33,26 @@ public class ThaumcraftProvider implements IStackFilterProvider {
         public boolean matches(FindItemRequest request) {
             ItemStack stack = request.getStackToFind();
             Item item = stack.getItem();
-            if (!(item instanceof ItemAspect || item instanceof IEssentiaContainerItem)) return false;
+            if (item instanceof IEssentiaContainerItem container) {
+                AspectList stackAspects = container.getAspects(stack);
+                if (stackAspects == null || stackAspects.aspects.isEmpty()) return false;
+                for (Aspect a : stackAspects.getAspects()) {
+                    if (filterAspects.getAmount(a) > 0) return true;
+                }
+                return false;
+            }
+            Aspect aspect;
+            if (ASPECTRECIPEINDEX && item instanceof ItemAspect) {
+                aspect = ItemAspect.getAspect(stack);
+            } else if (TCNEIPLUGIN && item instanceof com.djgiannuzz.thaumcraftneiplugin.items.ItemAspect) {
+                AspectList stackAspects = com.djgiannuzz.thaumcraftneiplugin.items.ItemAspect.getAspects(stack);
+                if (stackAspects == null || stackAspects.aspects.isEmpty()) return false;
+                aspect = stackAspects.getAspects()[0];
+            } else {
+                return false;
+            }
 
-            AspectList stackAspects = ItemAspect.getAspects(stack);
-            if (stackAspects == null || stackAspects.size() != 1) return false;
-
-            Aspect stackAspect = stackAspects.getAspects()[0];
-
-            return filterAspects.getAmount(stackAspect) > 0;
+            return filterAspects.getAmount(aspect) > 0;
         }
     }
 
