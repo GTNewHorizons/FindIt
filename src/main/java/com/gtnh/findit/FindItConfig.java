@@ -1,98 +1,68 @@
 package com.gtnh.findit;
 
-import java.io.File;
+import com.gtnewhorizon.gtnhlib.config.Config;
 
-import net.minecraftforge.common.config.Configuration;
-
+@Config(modid = "findit")
 public class FindItConfig {
 
-    public static int SEARCH_RADIUS = 16;
-    public static int SEARCH_COOLDOWN = 10;
-    public static int MAX_RESPONSE_SIZE = 20;
-    public static boolean ENABLE_ROTATE_VIEW = false;
-    public static boolean USE_PARTICLE_HIGHLIGHTER = false;
-    public static boolean SEARCH_ITEMS_ON_GROUND = true;
-    public static boolean SEARCH_IN_GT_PIPES = false;
-    public static boolean SEARCH_IN_ENDERIO_CONDUITS = false;
-    public static int ITEM_HIGHLIGHTING_DURATION = 10;
-    public static int BLOCK_HIGHLIGHTING_DURATION = 8;
-    public static int ITEM_HIGHLIGHTING_COLOR = 0xFFFF8726;
-    public static boolean ITEM_HIGHLIGHTING_EMPTY_ITEMSTACKS = true;
+    @Config.Comment("Radius to search within")
+    @Config.DefaultInt(16)
+    @Config.Name("SearchRadius")
+    public static int SEARCH_RADIUS;
 
-    public static void setup(final File file) {
-        final Configuration config = new Configuration(file);
-        try {
-            config.load();
+    @Config.Comment("Search cooldown in ticks")
+    @Config.DefaultInt(10)
+    @Config.Name("SearchCooldown")
+    public static int SEARCH_COOLDOWN;
 
-            SEARCH_RADIUS = config.get(Configuration.CATEGORY_GENERAL, "SearchRadius", "16", "Radius to search within")
-                    .getInt();
+    @Config.Comment("Maximum number of positions that can be displayed by item/block search")
+    @Config.DefaultInt(20)
+    @Config.Name("MaxResponseSize")
+    public static int MAX_RESPONSE_SIZE;
 
-            SEARCH_COOLDOWN = config
-                    .get(Configuration.CATEGORY_GENERAL, "SearchCooldown", "10", "Search cooldown in ticks").getInt();
+    @Config.Comment("Rotate the player's view to face found items/blocks after searching")
+    @Config.DefaultBoolean(false)
+    @Config.Name("EnableRotateView")
+    public static boolean ENABLE_ROTATE_VIEW;
 
-            MAX_RESPONSE_SIZE = config.get(
-                    Configuration.CATEGORY_GENERAL,
-                    "MaxResponseSize",
-                    "20",
-                    "Maximum number of positions that can be displayed by item/block search").getInt();
+    @Config.Comment("Use particles for the block highlighter instead of outlining found blocks")
+    @Config.DefaultBoolean(false)
+    @Config.Name("UseParticleHighlighter")
+    public static boolean USE_PARTICLE_HIGHLIGHTER;
 
-            USE_PARTICLE_HIGHLIGHTER = config.get(
-                    Configuration.CATEGORY_GENERAL,
-                    "UseParticleHighlighter",
-                    "false",
-                    "Use Particle for Block Highlighter").getBoolean();
+    @Config.Comment("Search items dropped on the ground")
+    @Config.DefaultBoolean(true)
+    @Config.Name("SearchItemsOnGround")
+    public static boolean SEARCH_ITEMS_ON_GROUND;
 
-            SEARCH_IN_GT_PIPES = config.get(
-                    Configuration.CATEGORY_GENERAL,
-                    "SearchInGregTechPipes",
-                    "false",
-                    "Search items & fluids in GT pipes").getBoolean();
+    @Config.Comment("Search items and fluids in GT pipes")
+    @Config.DefaultBoolean(false)
+    @Config.Name("SearchInGregTechPipes")
+    public static boolean SEARCH_IN_GT_PIPES;
 
-            SEARCH_IN_ENDERIO_CONDUITS = config.get(
-                    Configuration.CATEGORY_GENERAL,
-                    "SearchInEnderIOConduits",
-                    "false",
-                    "Search items & fluids in EnderIO conduits").getBoolean();
+    @Config.Comment("Search items and fluids in EnderIO conduits")
+    @Config.DefaultBoolean(false)
+    @Config.Name("SearchInEnderIOConduits")
+    public static boolean SEARCH_IN_ENDERIO_CONDUITS;
 
-            SEARCH_ITEMS_ON_GROUND = config.get(
-                    Configuration.CATEGORY_GENERAL,
-                    "SearchItemsOnGround",
-                    "true",
-                    "Search items dropped on ground").getBoolean();
+    @Config.Comment("Item highlighting duration in seconds")
+    @Config.DefaultInt(10)
+    @Config.Name("ItemHighlightingDuration")
+    public static int ITEM_HIGHLIGHTING_DURATION;
 
-            ITEM_HIGHLIGHTING_DURATION = config
-                    .get(Configuration.CATEGORY_GENERAL, "ItemHighlightingDuration", "10", "Item highlighting duration")
-                    .getInt();
+    @Config.Comment("Block highlighting duration in seconds")
+    @Config.DefaultInt(8)
+    @Config.Name("BlockHighlightingDuration")
+    public static int BLOCK_HIGHLIGHTING_DURATION;
 
-            BLOCK_HIGHLIGHTING_DURATION = config.get(
-                    Configuration.CATEGORY_GENERAL,
-                    "BlockHighlightingDuration",
-                    "8",
-                    "Block highlighting duration in seconds").getInt();
+    @Config.Comment("Item highlighting color as an ARGB hexadecimal color code.\nDo not prefix with \"0x\"")
+    @Config.DefaultString("FFFF8726")
+    @Config.Name("ItemHighlightingColor")
+    public static String ITEM_HIGHLIGHTING_COLOR;
 
-            ENABLE_ROTATE_VIEW = config.get(
-                    Configuration.CATEGORY_GENERAL,
-                    "EnableRotateView",
-                    "false",
-                    "Rotate player's view when searched").getBoolean();
-
-            ITEM_HIGHLIGHTING_COLOR = Integer.parseUnsignedInt(
-                    config.get(
-                            Configuration.CATEGORY_GENERAL,
-                            "ItemHighlightingColor",
-                            "FFFF8726",
-                            "Item highlighting color as a hexadecimal color code. For example 0xFFFF8726").getString(),
-                    16);
-
-            ITEM_HIGHLIGHTING_EMPTY_ITEMSTACKS = config.get(
-                    Configuration.CATEGORY_GENERAL,
-                    "ItemHighlightingEmptyItemStacks",
-                    "true",
-                    "If true, the item stack size is ignored. If false, items are only highlighted if their stack size is greater than zero.\n"
-                            + "This is useful when working with barrels or storage drawers.")
-                    .getBoolean();
-        } catch (Exception ignore) {} finally {
-            if (config.hasChanged()) config.save();
-        }
-    }
+    @Config.Comment("If true, the item stack size is ignored. If false, items are only highlighted if their stack size is greater than zero.\n"
+            + "This is useful when working with barrels or storage drawers.")
+    @Config.DefaultBoolean(true)
+    @Config.Name("ItemHighlightingEmptyItemStacks")
+    public static boolean ITEM_HIGHLIGHTING_EMPTY_ITEMSTACKS;
 }

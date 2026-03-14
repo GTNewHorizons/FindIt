@@ -3,6 +3,8 @@ package com.gtnh.findit;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.gtnewhorizon.gtnhlib.config.ConfigException;
+import com.gtnewhorizon.gtnhlib.config.ConfigurationManager;
 import com.gtnh.findit.IStackFilter.IStackFilterProvider;
 import com.gtnh.findit.handler.AdventureBackpackProvider;
 import com.gtnh.findit.handler.BackpackProvider;
@@ -55,8 +57,11 @@ public class FindIt {
         this.isGregTechLoaded = Loader.isModLoaded("gregtech") && !Loader.isModLoaded("gregapi");
         this.isEnderIOLoaded = Loader.isModLoaded("EnderIO");
         this.cooldownService = new SearchCooldownService();
-
-        FindItConfig.setup(event.getSuggestedConfigurationFile());
+        try {
+            ConfigurationManager.registerConfig(FindItConfig.class);
+        } catch (ConfigException e) {
+            throw new RuntimeException(e);
+        }
 
         if (event.getSide() == Side.CLIENT) {
             this.blockFindService = new ClientBlockFindService();
