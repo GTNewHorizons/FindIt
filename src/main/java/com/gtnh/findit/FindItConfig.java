@@ -7,16 +7,19 @@ public class FindItConfig {
 
     @Config.Comment("Radius to search within")
     @Config.DefaultInt(16)
+    @Config.RangeInt(min = 1)
     @Config.Name("SearchRadius")
     public static int SEARCH_RADIUS;
 
     @Config.Comment("Search cooldown in ticks")
     @Config.DefaultInt(10)
+    @Config.RangeInt(min = 0)
     @Config.Name("SearchCooldown")
     public static int SEARCH_COOLDOWN;
 
     @Config.Comment("Maximum number of positions that can be displayed by item/block search")
     @Config.DefaultInt(20)
+    @Config.RangeInt(min = 0)
     @Config.Name("MaxResponseSize")
     public static int MAX_RESPONSE_SIZE;
 
@@ -47,11 +50,13 @@ public class FindItConfig {
 
     @Config.Comment("Item highlighting duration in seconds")
     @Config.DefaultInt(10)
+    @Config.RangeInt(min = 1)
     @Config.Name("ItemHighlightingDuration")
     public static int ITEM_HIGHLIGHTING_DURATION;
 
     @Config.Comment("Block highlighting duration in seconds")
     @Config.DefaultInt(8)
+    @Config.RangeInt(min = 1)
     @Config.Name("BlockHighlightingDuration")
     public static int BLOCK_HIGHLIGHTING_DURATION;
 
