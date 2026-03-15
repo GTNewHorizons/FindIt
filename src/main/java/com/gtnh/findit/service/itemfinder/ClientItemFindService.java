@@ -138,7 +138,15 @@ public class ClientItemFindService extends ItemFindService {
                 }
             }
 
-            slotHighlighter.highlightSlots(gui, highlightedSlots, FindItConfig.ITEM_HIGHLIGHTING_COLOR);
+            slotHighlighter.highlightSlots(gui, highlightedSlots, getItemHighlightingColor());
+        }
+    }
+
+    private static int getItemHighlightingColor() {
+        try {
+            return Integer.parseUnsignedInt(FindItConfig.ITEM_HIGHLIGHTING_COLOR, 16);
+        } catch (NumberFormatException e) {
+            return 0xFFFF8726;
         }
     }
 
