@@ -17,4 +17,6 @@ FindIt has special support for the following mods' containers:
 * [Forestry](https://github.com/GTNewHorizons/ForestryMC): Finds items inside backpacks when inside another container.
 * [ProjectRedExploration](https://github.com/GTNewHorizons/ProjectRed): Finds items inside backpacks when inside another container.
 * [Draconic Evolution](https://github.com/GTNewHorizons/Draconic-Evolution/): Finds placed items.
-* [Thaumcraft 4](https://www.curseforge.com/minecraft/mc-mods/thaumcraft/files/2227552): Finds essentia in placed containers. Also finds essentia when trying to "find" the aspect items added by [Aspect Recipe Index](https://github.com/GTNewHorizons/AspectRecipeIndex) and [Thaumcraft NEI Plugin](https://www.curseforge.com/minecraft/mc-mods/thaumcraft-nei-plugin).
+* [Thaumcraft 4](https://www.curseforge.com/minecraft/mc-mods/thaumcraft/files/2227552): Finds essentia in placed containers.
+  * [Aspect Recipe Index](https://github.com/GTNewHorizons/AspectRecipeIndex): Also finds essentia when trying to "find" its aspect items. 
+  * [Thaumcraft NEI Plugin](https://www.curseforge.com/minecraft/mc-mods/thaumcraft-nei-plugin) Also finds essentia when trying to "find" its aspect items.
