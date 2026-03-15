@@ -5,7 +5,7 @@ This is inspired by the "Search in nearby inventories" feature from 1.7.10 Extra
 
 Did you forget where you placed your EV Mixer?
 
-Well no problem now!  Locate the item in NEI, however over it, and hit 'Y' (the default keybind). If it's within range (+/-16 blocks), it will flash an outline effect for you to locate it!
+Well, no problem now!  Locate the item in NEI, hover over it, and hit 'Y' (the default keybind). If it's within range (+/-16 blocks), an outline will flash around it for you to locate it!
 
 Dependencies:
 [NotEnoughItems](https://github.com/GTNewHorizons/NotEnoughItems)
