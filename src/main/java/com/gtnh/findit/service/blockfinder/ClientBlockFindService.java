@@ -113,7 +113,7 @@ public class ClientBlockFindService extends BlockFindService {
                                                 new FindBlockRequest.BlockKey(
                                                         Block.getIdFromBlock(block),
                                                         itemStack.getItemDamage()));
-                                        if (matching.size() > 1000) {
+                                        if (matching.size() >= 1000) {
                                             break;
                                         }
                                     }

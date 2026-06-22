@@ -90,13 +90,17 @@ public class FindItemRequest implements IMessage {
     public void fromBytes(ByteBuf buf) {
         this.isSearchByName = buf.readBoolean();
         if (this.isSearchByName) {
-            int size = buf.readInt();
+            int declaredSize = buf.readInt();
+            int max = 1000;
+            int size = Math.max(0, Math.min(declaredSize, max));
             this.matchingItems = new HashSet<>(size);
-            for (int i = 0; i < size; i++) {
+            for (int i = 0; i < declaredSize; i++) {
                 int itemId = buf.readInt();
                 int damage = buf.readShort();
                 NBTTagCompound tag = ByteBufUtils.readTag(buf);
-                this.matchingItems.add(new ItemKey(itemId, damage, tag));
+                if (i < max) {
+                    this.matchingItems.add(new ItemKey(itemId, damage, tag));
+                }
             }
         } else {
             this.targetStack = ProtoUtils.readItemStack(buf);
@@ -111,11 +115,14 @@ public class FindItemRequest implements IMessage {
     public void toBytes(ByteBuf buf) {
         buf.writeBoolean(this.isSearchByName);
         if (this.isSearchByName) {
-            buf.writeInt(this.matchingItems.size());
-            for (ItemKey item : this.matchingItems) {
-                buf.writeInt(item.itemId);
-                buf.writeShort(item.damage);
-                ByteBufUtils.writeTag(buf, item.tag);
+            int size = this.matchingItems == null ? 0 : this.matchingItems.size();
+            buf.writeInt(size);
+            if (this.matchingItems != null) {
+                for (ItemKey item : this.matchingItems) {
+                    buf.writeInt(item.itemId);
+                    buf.writeShort(item.damage);
+                    ByteBufUtils.writeTag(buf, item.tag);
+                }
             }
         } else {
             ProtoUtils.writeItemStack(buf, this.targetStack);
@@ -138,6 +145,7 @@ public class FindItemRequest implements IMessage {
     }
 
     public boolean isItemMatches(ItemStack stack) {
+        if (!this.isSearchByName || this.matchingItems == null || this.matchingItems.isEmpty()) return false;
         if (stack == null || stack.getItem() == null) return false;
         int id = Item.getIdFromItem(stack.getItem());
         int damage = stack.getItemDamage();
@@ -192,7 +200,8 @@ public class FindItemRequest implements IMessage {
 
         @Override
         public BlockFoundResponse onMessage(FindItemRequest message, MessageContext ctx) {
-            if (message.isSearchByName || message.targetStack != null) {
+            if ((message.isSearchByName && message.matchingItems != null && !message.matchingItems.isEmpty())
+                    || message.targetStack != null) {
                 FindIt.getItemFindService().handleRequest(ctx.getServerHandler().playerEntity, message);
             }
             return null;

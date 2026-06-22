@@ -41,13 +41,17 @@ public class ItemFoundResponse implements IMessage {
     public void fromBytes(ByteBuf buf) {
         this.isSearchByName = buf.readBoolean();
         if (this.isSearchByName) {
-            int size = buf.readInt();
+            int declaredSize = buf.readInt();
+            int max = 1000;
+            int size = Math.max(0, Math.min(declaredSize, max));
             this.matchingItems = new ArrayList<>(size);
-            for (int i = 0; i < size; i++) {
+            for (int i = 0; i < declaredSize; i++) {
                 int itemId = buf.readInt();
                 int damage = buf.readShort();
                 NBTTagCompound tag = ByteBufUtils.readTag(buf);
-                this.matchingItems.add(new FindItemRequest.ItemKey(itemId, damage, tag));
+                if (i < max) {
+                    this.matchingItems.add(new FindItemRequest.ItemKey(itemId, damage, tag));
+                }
             }
         } else {
             this.foundStack = ProtoUtils.readItemStack(buf);
@@ -58,11 +62,14 @@ public class ItemFoundResponse implements IMessage {
     public void toBytes(ByteBuf buf) {
         buf.writeBoolean(this.isSearchByName);
         if (this.isSearchByName) {
-            buf.writeInt(this.matchingItems.size());
-            for (FindItemRequest.ItemKey item : this.matchingItems) {
-                buf.writeInt(item.itemId);
-                buf.writeShort(item.damage);
-                ByteBufUtils.writeTag(buf, item.tag);
+            int size = this.matchingItems == null ? 0 : this.matchingItems.size();
+            buf.writeInt(size);
+            if (this.matchingItems != null) {
+                for (FindItemRequest.ItemKey item : this.matchingItems) {
+                    buf.writeInt(item.itemId);
+                    buf.writeShort(item.damage);
+                    ByteBufUtils.writeTag(buf, item.tag);
+                }
             }
         } else {
             ProtoUtils.writeItemStack(buf, this.foundStack);

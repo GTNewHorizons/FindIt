@@ -140,22 +140,21 @@ public class ClientItemFindService extends ItemFindService {
                             for (ItemStack itemStack : ItemList.items) {
                                 if (filter.matches(itemStack)) {
                                     Item item = itemStack.getItem();
+                                    if (item == null) {
+                                        continue;
+                                    }
                                     NBTTagCompound tag = null;
-                                    if (item != null) {
-                                        String className = item.getClass().getName();
-                                        if (className
-                                                .equals("com.gtnewhorizons.aspectrecipeindex.common.items.ItemAspect")
-                                                || className.equals(
-                                                        "com.djgiannuzz.thaumcraftneiplugin.items.ItemAspect")) {
-                                            tag = itemStack.getTagCompound();
-                                        }
+                                    String className = item.getClass().getName();
+                                    if (className.equals("com.gtnewhorizons.aspectrecipeindex.common.items.ItemAspect")
+                                            || className.equals("com.djgiannuzz.thaumcraftneiplugin.items.ItemAspect")) {
+                                        tag = itemStack.getTagCompound();
                                     }
                                     matching.add(
                                             new FindItemRequest.ItemKey(
                                                     Item.getIdFromItem(item),
                                                     itemStack.getItemDamage(),
                                                     tag));
-                                    if (matching.size() > 1000) {
+                                    if (matching.size() >= 1000) {
                                         break;
                                     }
                                 }

@@ -33,7 +33,9 @@ public class ThaumcraftProvider implements IStackFilterProvider {
         public boolean matches(FindItemRequest request) {
             if (request.isSearchByName()) {
                 if (filterAspects == null || filterAspects.aspects.isEmpty()) return false;
-                for (FindItemRequest.ItemKey key : request.getMatchingItems()) {
+                final java.util.Set<FindItemRequest.ItemKey> matching = request.getMatchingItems();
+                if (matching == null || matching.isEmpty()) return false;
+                for (FindItemRequest.ItemKey key : matching) {
                     Item matchItem = Item.getItemById(key.itemId);
                     if (matchItem == null) continue;
                     ItemStack dummyStack = new ItemStack(matchItem, 1, key.damage);
