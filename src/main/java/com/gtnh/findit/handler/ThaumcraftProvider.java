@@ -23,7 +23,7 @@ public class ThaumcraftProvider implements IStackFilterProvider {
 
     static class AspectStackFilter implements IStackFilter {
 
-        AspectList filterAspects;
+        final AspectList filterAspects;
 
         AspectStackFilter(AspectList filterAspects) {
             this.filterAspects = filterAspects;
@@ -31,6 +31,33 @@ public class ThaumcraftProvider implements IStackFilterProvider {
 
         @Override
         public boolean matches(FindItemRequest request) {
+            if (request.isSearchByName()) {
+                if (filterAspects == null || filterAspects.aspects.isEmpty()) return false;
+                for (FindItemRequest.ItemKey key : request.getMatchingItems()) {
+                    Item matchItem = Item.getItemById(key.itemId);
+                    if (matchItem == null) continue;
+                    ItemStack dummyStack = new ItemStack(matchItem, 1, key.damage);
+                    if (key.tag != null) {
+                        dummyStack.setTagCompound(key.tag);
+                    }
+                    Aspect aspect = null;
+                    if (ASPECTRECIPEINDEX && matchItem instanceof ItemAspect) {
+                        aspect = ItemAspect.getAspect(dummyStack);
+                    } else if (TCNEIPLUGIN && matchItem.getClass().getName()
+                            .equals("com.djgiannuzz.thaumcraftneiplugin.items.ItemAspect")) {
+                                AspectList stackAspects = com.djgiannuzz.thaumcraftneiplugin.items.ItemAspect
+                                        .getAspects(dummyStack);
+                                if (stackAspects != null && !stackAspects.aspects.isEmpty()) {
+                                    aspect = stackAspects.getAspects()[0];
+                                }
+                            }
+                    if (aspect != null && filterAspects.getAmount(aspect) > 0) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
             ItemStack stack = request.getStackToFind();
             Item item = stack.getItem();
             if (item instanceof IEssentiaContainerItem container) {

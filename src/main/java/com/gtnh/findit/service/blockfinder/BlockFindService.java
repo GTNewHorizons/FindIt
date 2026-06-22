@@ -32,11 +32,6 @@ public class BlockFindService {
         for (TileEntity tileEntity : WorldUtils.getTileEntitiesAround(player, FindItConfig.SEARCH_RADIUS)) {
             try {
                 Block tileBlock = tileEntity.getBlockType();
-
-                if (!request.getBlockToFind().equals(tileBlock)) {
-                    continue;
-                }
-
                 int tileMeta;
                 if (FindIt.isGregTechLoaded() && tileEntity instanceof IGregTechTileEntity gregTech) {
                     tileMeta = gregTech.getMetaTileID();
@@ -44,7 +39,15 @@ public class BlockFindService {
                     tileMeta = tileEntity.getBlockMetadata();
                 }
 
-                if (request.getMetaToFind() == tileMeta) {
+                boolean matches;
+                if (request.isSearchByName()) {
+                    matches = request.matches(tileBlock, tileMeta);
+                } else {
+                    matches = request.getBlockToFind() != null && request.getBlockToFind().equals(tileBlock)
+                            && request.getMetaToFind() == tileMeta;
+                }
+
+                if (matches) {
                     positions.add(new ChunkPosition(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord));
                     if (positions.size() == FindItConfig.MAX_RESPONSE_SIZE) {
                         break;
