@@ -56,7 +56,12 @@ public class MinecraftProvider implements IStackFilterProvider {
             filter.add(new FluidStackFilter(fluid));
         }
 
-        filter.add(request -> StackInfo.equalItemAndNBT(request.getStackToFind(), stack, true));
+        filter.add(request -> {
+            if (request.isSearchByName()) {
+                return request.isItemMatches(stack);
+            }
+            return StackInfo.equalItemAndNBT(request.getStackToFind(), stack, true);
+        });
 
         return filter.isEmpty() ? null : filter;
     }

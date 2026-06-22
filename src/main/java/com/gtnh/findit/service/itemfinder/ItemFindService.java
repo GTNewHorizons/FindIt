@@ -43,6 +43,6 @@ public class ItemFindService {
         }
 
         FindItNetwork.CHANNEL.sendTo(new BlockFoundResponse(positions), player);
-        FindItNetwork.CHANNEL.sendTo(new ItemFoundResponse(request.getStackToFind()), player);
+        FindItNetwork.CHANNEL.sendTo(new ItemFoundResponse(request), player);
     }
 }

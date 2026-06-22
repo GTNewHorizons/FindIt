@@ -1,5 +1,9 @@
 package com.gtnh.findit.service.blockfinder;
 
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
+
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 
@@ -14,24 +18,81 @@ public class FindBlockRequest implements IMessage {
 
     private Block blockToFind;
     private int metaToFind;
+    private boolean isSearchByName;
+    private Set<BlockKey> matchingBlocks;
+
+    public static class BlockKey {
+
+        public final int blockId;
+        public final int damage;
+
+        public BlockKey(int blockId, int damage) {
+            this.blockId = blockId;
+            this.damage = damage;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof BlockKey)) return false;
+            BlockKey blockKey = (BlockKey) o;
+            return blockId == blockKey.blockId && damage == blockKey.damage;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(blockId, damage);
+        }
+    }
 
     public FindBlockRequest(Block block, int meta) {
         this.blockToFind = block;
         this.metaToFind = meta;
     }
 
+    public FindBlockRequest(Set<BlockKey> matchingBlocks) {
+        this.matchingBlocks = matchingBlocks;
+        this.isSearchByName = true;
+    }
+
     public FindBlockRequest() {}
 
     @Override
     public void fromBytes(ByteBuf buf) {
-        blockToFind = Block.getBlockById(buf.readShort());
-        metaToFind = buf.readShort();
+        this.isSearchByName = buf.readBoolean();
+        if (this.isSearchByName) {
+            int declaredSize = buf.readInt();
+            int max = 1000;
+            int size = Math.max(0, Math.min(declaredSize, max));
+            this.matchingBlocks = new HashSet<>(size);
+            for (int i = 0; i < declaredSize; i++) {
+                BlockKey key = new BlockKey(buf.readShort(), buf.readShort());
+                if (i < max) {
+                    this.matchingBlocks.add(key);
+                }
+            }
+        } else {
+            blockToFind = Block.getBlockById(buf.readShort());
+            metaToFind = buf.readShort();
+        }
     }
 
     @Override
     public void toBytes(ByteBuf buf) {
-        buf.writeShort(Block.getIdFromBlock(blockToFind));
-        buf.writeShort(metaToFind);
+        buf.writeBoolean(this.isSearchByName);
+        if (this.isSearchByName) {
+            int size = this.matchingBlocks == null ? 0 : this.matchingBlocks.size();
+            buf.writeInt(size);
+            if (this.matchingBlocks != null) {
+                for (BlockKey key : this.matchingBlocks) {
+                    buf.writeShort(key.blockId);
+                    buf.writeShort(key.damage);
+                }
+            }
+        } else {
+            buf.writeShort(Block.getIdFromBlock(blockToFind));
+            buf.writeShort(metaToFind);
+        }
     }
 
     public Block getBlockToFind() {
@@ -42,11 +103,24 @@ public class FindBlockRequest implements IMessage {
         return metaToFind;
     }
 
+    public boolean isSearchByName() {
+        return this.isSearchByName;
+    }
+
+    public boolean matches(Block block, int meta) {
+        if (!this.isSearchByName || this.matchingBlocks == null || this.matchingBlocks.isEmpty()) return false;
+        if (block == null) return false;
+        int blockId = Block.getIdFromBlock(block);
+        return this.matchingBlocks.contains(new BlockKey(blockId, meta))
+                || this.matchingBlocks.contains(new BlockKey(blockId, 32767));
+    }
+
     public static class Handler implements IMessageHandler<FindBlockRequest, BlockFoundResponse> {
 
         @Override
         public BlockFoundResponse onMessage(FindBlockRequest message, MessageContext ctx) {
-            if (message.blockToFind != null && message.blockToFind != Blocks.air) {
+            if ((message.isSearchByName && message.matchingBlocks != null && !message.matchingBlocks.isEmpty())
+                    || (message.blockToFind != null && message.blockToFind != Blocks.air)) {
                 FindIt.getBlockFindService().handleRequest(ctx.getServerHandler().playerEntity, message);
             }
             return null;
