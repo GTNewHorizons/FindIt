@@ -49,13 +49,14 @@ public class ParticlePosition extends EntityReddustFX {
             float rotationYZ, float rotationXY, float rotationXZ) {
         tessellator.draw();
 
+        GL11.glPushAttrib(GL11.GL_ENABLE_BIT);
         GL11.glDisable(GL11.GL_DEPTH_TEST);
 
         tessellator.startDrawingQuads();
         super.renderParticle(tessellator, partialTickTime, rotationX, rotationZ, rotationYZ, rotationXY, rotationXZ);
         tessellator.draw();
 
-        GL11.glEnable(GL11.GL_DEPTH_TEST);
+        GL11.glPopAttrib();
         tessellator.startDrawingQuads();
     }
 
