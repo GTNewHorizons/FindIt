@@ -6,8 +6,8 @@ import java.util.List;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockChest;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.multiplayer.WorldClient;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.util.AxisAlignedBB;
@@ -44,7 +44,7 @@ public class BlockHighlighter {
             positions.clear();
         }
 
-        EntityPlayerSP p = mc.thePlayer;
+        EntityLivingBase p = mc.renderViewEntity != null ? mc.renderViewEntity : mc.thePlayer;
         double doubleX = p.lastTickPosX + (p.posX - p.lastTickPosX) * event.partialTicks;
         double doubleY = p.lastTickPosY + (p.posY - p.lastTickPosY) * event.partialTicks;
         double doubleZ = p.lastTickPosZ + (p.posZ - p.lastTickPosZ) * event.partialTicks;

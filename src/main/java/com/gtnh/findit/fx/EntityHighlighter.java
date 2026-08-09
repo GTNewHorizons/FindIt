@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.util.MathHelper;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
@@ -40,7 +40,7 @@ public class EntityHighlighter {
             entityIds.clear();
         }
 
-        EntityPlayerSP p = mc.thePlayer;
+        EntityLivingBase p = mc.renderViewEntity != null ? mc.renderViewEntity : mc.thePlayer;
         double doubleX = p.lastTickPosX + (p.posX - p.lastTickPosX) * event.partialTicks;
         double doubleY = p.lastTickPosY + (p.posY - p.lastTickPosY) * event.partialTicks;
         double doubleZ = p.lastTickPosZ + (p.posZ - p.lastTickPosZ) * event.partialTicks;
