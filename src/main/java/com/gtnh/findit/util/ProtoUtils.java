@@ -16,7 +16,7 @@ public class ProtoUtils {
         buf.writeInt(positions.size());
         for (ChunkPosition pos : positions) {
             buf.writeInt(pos.chunkPosX);
-            buf.writeByte(pos.chunkPosY);
+            buf.writeInt(pos.chunkPosY);
             buf.writeInt(pos.chunkPosZ);
         }
     }
@@ -35,7 +35,7 @@ public class ProtoUtils {
         List<ChunkPosition> positions = new ArrayList<>();
         while (amount > 0) {
             final int x = buf.readInt();
-            final int y = buf.readUnsignedByte();
+            final int y = buf.readInt();
             final int z = buf.readInt();
             positions.add(new ChunkPosition(x, y, z));
             --amount;
