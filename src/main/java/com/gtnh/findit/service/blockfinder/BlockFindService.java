@@ -14,7 +14,6 @@ import com.gtnh.findit.FindItNetwork;
 import com.gtnh.findit.util.WorldUtils;
 
 import cpw.mods.fml.relauncher.Side;
-import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 
 public class BlockFindService {
 
@@ -37,12 +36,11 @@ public class BlockFindService {
                     continue;
                 }
 
-                int tileMeta;
-                if (FindIt.isGregTechLoaded() && tileEntity instanceof IGregTechTileEntity gregTech) {
-                    tileMeta = gregTech.getMetaTileID();
-                } else {
-                    tileMeta = tileEntity.getBlockMetadata();
-                }
+                int tileMeta = tileBlock.getDamageValue(
+                        tileEntity.getWorldObj(),
+                        tileEntity.xCoord,
+                        tileEntity.yCoord,
+                        tileEntity.zCoord);
 
                 if (request.getMetaToFind() == tileMeta) {
                     positions.add(new ChunkPosition(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord));
