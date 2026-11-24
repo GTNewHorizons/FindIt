@@ -58,7 +58,7 @@ public class ClientItemFindService extends ItemFindService {
     }
 
     public void handleResponse(EntityClientPlayerMP player, ItemFoundResponse response) {
-        this.slotHighlighter.highlightSlots(null, new HashSet<>(), 0xFFFF8726);
+        this.slotHighlighter.clear();
         this.foundItem = response.getFoundStack() != null ? new FindItemRequest(response.getFoundStack()) : null;
         this.expirationTime = System.currentTimeMillis() + FindItConfig.ITEM_HIGHLIGHTING_DURATION * 1000L;
 
@@ -92,40 +92,33 @@ public class ClientItemFindService extends ItemFindService {
         @SubscribeEvent
         public void onClientPostTick(TickEvent.ClientTickEvent event) {
 
-            if (foundItem == null || event.phase != TickEvent.Phase.END) {
+            if (event.phase != TickEvent.Phase.END) {
                 return;
             }
 
-            // `WorldClient` is only available on the client-side, thus effectively checking if the game is running on
-            // the client. We are only interested in highlighting slots when the player is in a GUI; the operation is
-            // bound client-side.
-            if (Minecraft.getMinecraft().theWorld == null) {
-                return;
+            // If the expiration time has passed, we reset the found item. This is done to prevent the item from being
+            // highlighted indefinitely.
+            if (foundItem != null && System.currentTimeMillis() > expirationTime) {
+                foundItem = null;
             }
 
-            // We are only interested in GUIs that contain some kind of inventory.
-            final GuiScreen screen = Minecraft.getMinecraft().currentScreen;
-            if (!(screen instanceof GuiContainer)) {
+            // The highlighter must not keep the last GUI and its slots once highlighting stops, otherwise it retains
+            // the player and the whole WorldClient after leaving the world.
+            final Minecraft mc = Minecraft.getMinecraft();
+            final GuiScreen screen = mc.currentScreen;
+            if (foundItem == null || mc.theWorld == null || !(screen instanceof GuiContainer)) {
+                slotHighlighter.clear();
                 return;
             }
 
             final GuiContainer gui = (GuiContainer) screen;
             final HashSet<Slot> highlightedSlots = new HashSet<>();
 
-            // If the expiration time has passed, we reset the found item. This is done to prevent the item from being
-            // highlighted indefinitely.
-            if (System.currentTimeMillis() > expirationTime) {
-                foundItem = null;
-            }
-            if (foundItem == null) {
-                return;
-            }
-
             // We continue to iterate over each slot of the given GUI's inventory and checking if the slot contains the
             // item that we are looking for.
             @SuppressWarnings("unchecked")
             List<Slot> slots = gui.inventorySlots.inventorySlots;
-            EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+            EntityPlayer player = mc.thePlayer;
 
             for (Slot slot : slots) {
                 if (!(slot.inventory instanceof InventoryPlayer)

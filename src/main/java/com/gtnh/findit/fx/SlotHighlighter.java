@@ -1,6 +1,7 @@
 package com.gtnh.findit.fx;
 
-import java.util.HashSet;
+import java.util.Collections;
+import java.util.Set;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -22,13 +23,18 @@ public class SlotHighlighter implements IContainerDrawHandler {
             "textures/gui/slot_highlight.png");
 
     private GuiContainer gui = null;
-    private HashSet<Slot> slots = new HashSet<>();
+    private Set<Slot> slots = Collections.emptySet();
     private float red = 0;
     private float green = 0;
     private float blue = 0;
     private float alpha = 0;
 
-    public void highlightSlots(GuiContainer gui, HashSet<Slot> slots, int color) {
+    public void clear() {
+        this.gui = null;
+        this.slots = Collections.emptySet();
+    }
+
+    public void highlightSlots(GuiContainer gui, Set<Slot> slots, int color) {
 
         this.gui = gui;
         this.slots = slots;
